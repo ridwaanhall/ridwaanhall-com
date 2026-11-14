@@ -30,17 +30,14 @@
  *   npx tsx scripts/check-rls.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { pool } = await import("../lib/db/client.ts");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 try {
   const { rows: roles } = await pool.query(
@@ -118,10 +115,4 @@ try {
   await pool.end();
 }
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} RLS checks passed.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} RLS checks passed.`));

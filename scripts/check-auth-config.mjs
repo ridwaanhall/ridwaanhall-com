@@ -41,14 +41,11 @@
  * Read-only: it asks for a CSRF token and an authorization redirect, and
  * completes no sign-in. Nothing is written and no session is created.
  */
+import { baseUrl, reporter } from "./harness.mjs";
 
-const BASE = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
+const BASE = baseUrl();
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `  ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 const note = (text) => console.log(`  ..    ${text}`);
 
 /**
@@ -98,8 +95,8 @@ try {
   const csrfBody = await csrf.text();
 
   check(
-    csrf.status === 200,
     "a CSRF token is issued, so the signing secret is set",
+    csrf.status === 200,
     csrf.status === 500
       ? "500 -- AUTH_SECRET is almost certainly unset in this environment"
       : `got ${csrf.status}`,
@@ -111,7 +108,7 @@ try {
   } catch {
     /* reported below */
   }
-  check(Boolean(csrfToken), "and it is a token rather than an error page", csrfBody.slice(0, 90));
+  check("and it is a token rather than an error page", Boolean(csrfToken), csrfBody.slice(0, 90));
 
   /* ---------------------------------------------------------- the providers */
   const providers = await get("/api/auth/providers");
@@ -123,10 +120,10 @@ try {
       /* reported below */
     }
   }
-  check(providers.status === 200, "the provider list is served", `got ${providers.status}`);
+  check("the provider list is served", providers.status === 200, `got ${providers.status}`);
 
   for (const id of Object.keys(EXPECTED)) {
-    check(id in listed, `${EXPECTED[id].label} is registered as a provider`);
+    check(`${EXPECTED[id].label} is registered as a provider`, id in listed);
   }
 
   /* --------------------------------------------- the authorization redirect */
@@ -162,16 +159,16 @@ try {
        */
       const bounced = url?.searchParams.get("error");
       check(
-        url?.host === expected.host,
         `${expected.label} sends the browser to ${expected.host}`,
+        url?.host === expected.host,
         bounced ? `bounced back with error=${bounced}` : location.slice(0, 100) || "no redirect",
       );
       if (url?.host !== expected.host) continue;
 
       const clientId = url.searchParams.get("client_id") ?? "";
       check(
-        Boolean(clientId) && !PLACEHOLDER.has(clientId),
         `${expected.label} was given a real client id`,
+        Boolean(clientId) && !PLACEHOLDER.has(clientId),
         PLACEHOLDER.has(clientId)
           ? `the URL carries the literal string "${clientId}" -- AUTH_${id.toUpperCase()}_ID ` +
             "is unset, and its value is stringified into the query as it stands. " +
@@ -190,22 +187,16 @@ try {
       const redirectUri = url.searchParams.get("redirect_uri") ?? "";
       const expectedUri = `${BASE}/api/auth/callback/${id}`;
       check(
-        redirectUri === expectedUri,
         `${expected.label} asks to come back to this site`,
+        redirectUri === expectedUri,
         `it asks for ${redirectUri || "nothing"}, not ${expectedUri}`,
       );
       if (redirectUri) note(`register with ${expected.label}: ${redirectUri}`);
     }
   }
 } catch (error) {
-  failures++;
-  console.log(`  FAIL  ${error.message}`);
+  check(error.message, false);
   console.log(`\nIs ${BASE} reachable? (npm run dev, or pass a deployment URL)`);
 }
 
-console.log(
-  failures === 0
-    ? "\nSign-in is configured, and both providers are reachable."
-    : `\n${failures} check(s) failed.`,
-);
-process.exit(failures === 0 ? 0 : 1);
+process.exit(finish("Sign-in is configured, and both providers are reachable."));

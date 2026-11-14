@@ -37,30 +37,20 @@
  * session the same way `check-admin.mjs` does.
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
-const { encode } = await import("next-auth/jwt");
 const { staffAccountId } = await import("./fixture-ids.mjs");
 const { ADMIN_SECTIONS, adminPath, sectionTabs } = await import("../lib/admin/registry.ts");
 
 const BASE = baseUrl();
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push(pass);
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 const cookieName = sessionCookieName(BASE);
-const token = await encode({
-  token: { sub: String(await staffAccountId()) },
-  secret: process.env.AUTH_SECRET,
-  salt: cookieName,
-  maxAge: 60 * 10,
-});
+const token = await mintSession(String(await staffAccountId()), BASE, 60 * 10);
 
 const { chromium } = await import("playwright");
 const browser = await chromium.launch();
@@ -346,10 +336,4 @@ await context.addCookies([
 
 await browser.close();
 
-const failed = checks.filter((pass) => !pass).length;
-console.log(
-  failed === 0
-    ? `\nAll ${checks.length} nav checks passed.`
-    : `\n${failed} of ${checks.length} failed.`,
-);
-process.exit(failed ? 1 : 0);
+process.exit(finish((n) => `All ${n} nav checks passed.`));

@@ -37,14 +37,13 @@
  *   npx tsx --conditions=react-server scripts/check-admin-labels.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { ADMIN_ENTRIES, adminPath } = await import("../lib/admin/registry.ts");
 const { roleAllows } = await import("../lib/auth/permissions.ts");
 const { formModelFor, listModelFor } = await import("../lib/admin/models/index.ts");
@@ -82,11 +81,7 @@ const SLACK = 12;
  */
 const wrapped = (lines) => lines > 1;
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push(pass);
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /** A real key for a model, so an edit screen opens on a form and not on a 404. */
 async function sampleId(key) {
@@ -126,12 +121,7 @@ for (const entry of ADMIN_ENTRIES) {
   if (form && roleAllows(form.canCreate, false)) routes.push(`${screen}/new`);
 }
 
-const token = await encode({
-  token: { sub: await staffAccountId() },
-  secret: process.env.AUTH_SECRET,
-  salt: COOKIE,
-  maxAge: 60 * 30,
-});
+const token = await mintSession(await staffAccountId(), BASE, 60 * 30);
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
@@ -296,6 +286,4 @@ await page.close();
 await browser.close();
 await db.$client.end();
 
-const failed = checks.filter((pass) => !pass).length;
-console.log(`\n${checks.length - failed}/${checks.length} passed`);
-process.exit(failed ? 1 : 0);
+process.exit(finish());

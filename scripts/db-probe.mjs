@@ -1,6 +1,6 @@
 /** Connectivity + inventory check against whichever database .env.local points at. */
 import { config } from "dotenv";
-import pg from "pg";
+import { pgPool } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -11,9 +11,7 @@ const t0 = Date.now();
  * given in lib/db/client.ts: postgres.js pipelines onto one socket and stalls
  * permanently under Supabase's transaction pooler.
  */
-const url = new URL(process.env.STORAGE_POSTGRES_URL);
-url.searchParams.delete("sslmode");
-const pool = new pg.Pool({ connectionString: url.toString(), max: 5, ssl: { rejectUnauthorized: false } });
+const pool = pgPool(5);
 const sql = Object.assign(
   (strings, ...values) =>
     pool

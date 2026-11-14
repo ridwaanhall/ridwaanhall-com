@@ -27,6 +27,7 @@
  *   npx tsx scripts/check-admin-usage.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -38,11 +39,7 @@ const { db, pool } = await import("../lib/db/client.ts");
 const { sql } = await import("drizzle-orm");
 const { getTableName } = await import("drizzle-orm");
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `  ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 /**
  * Every single-column foreign key pointing at one table in `app`.
@@ -80,7 +77,7 @@ for (const key of keys) {
 
   // The screen has to exist. A usage entry naming no registry key is a column
   // nobody can reach, and the map is hand-written where the registry is not.
-  check(ADMIN_ENTRIES_BY_KEY.has(key), `${key}: is a registry screen`);
+  check(`${key}: is a registry screen`, ADMIN_ENTRIES_BY_KEY.has(key));
 
   const declared = columns
     .map((column) => `${getTableName(column.table)}.${column.name}`)
@@ -92,13 +89,13 @@ for (const key of keys) {
   const stale = declared.filter((name) => !actual.includes(name));
 
   check(
-    missing.length === 0,
     `${key}: counts every foreign key into ${tableName} (${actual.length})`,
+    missing.length === 0,
     missing.length === 0 ? "" : `not counted: ${missing.join(", ")}`,
   );
   check(
-    stale.length === 0,
     `${key}: counts nothing that is not a foreign key into ${tableName}`,
+    stale.length === 0,
     stale.length === 0 ? "" : `no such constraint: ${stale.join(", ")}`,
   );
 }
@@ -114,7 +111,7 @@ for (const key of keys) {
 for (const key of keys) {
   const list = ADMIN_LIST_MODELS[key];
   const shown = list?.columns.some((column) => column.key === "used" || column.key === "used_by");
-  check(shown === true, `${key}: the list actually renders the column`);
+  check(`${key}: the list actually renders the column`, shown === true);
 }
 
 /*
@@ -143,11 +140,10 @@ if (notes.length > 0) {
   for (const note of notes) console.log(note);
 }
 
-console.log(
-  failures === 0
-    ? `\nAll ${totalRelations} foreign keys into a lookup table are counted by its screen.`
-    : `\n${failures} check(s) FAILED. A "Used by" column disagrees with the schema — update ADMIN_USAGE and the descriptor's cell together.`,
+const exitCode = finish(
+  `All ${totalRelations} foreign keys into a lookup table are counted by its screen.`,
+  "A \"Used by\" column disagrees with the schema — update ADMIN_USAGE and the descriptor's cell together.",
 );
 
 await pool.end();
-process.exit(failures === 0 ? 0 : 1);
+process.exit(exitCode);

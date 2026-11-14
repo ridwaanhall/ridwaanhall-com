@@ -24,14 +24,11 @@
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
+import { reporter } from "./harness.mjs";
 
 const render = await import("../lib/email/render.ts");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /** A name and a message that would break a template that forgot to escape. */
 const HOSTILE_NAME = `Ada <script>alert(1)</script> & "Lovelace"`;
@@ -250,10 +247,4 @@ if (writeIndex !== -1) {
   console.log(`\nwrote 10 files to ${dir}`);
 }
 
-const failed = checks.filter((c) => !c.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} email checks passed.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} email checks passed.`));

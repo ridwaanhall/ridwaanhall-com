@@ -27,14 +27,11 @@
  * setting one and redeploying the existing build changes nothing -- it has to
  * be built again. The rest are read per request, and a redeploy is enough.
  */
+import { baseUrl, reporter } from "./harness.mjs";
 
-const BASE = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
+const BASE = baseUrl();
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `\n          ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 const body = async (path) => {
   const response = await fetch(`${BASE}${path}`, { redirect: "manual" });
@@ -47,8 +44,8 @@ try {
   /* ----------------------------------------------------------- sign-in */
   const csrf = await fetch(`${BASE}/api/auth/csrf`, { redirect: "manual" });
   check(
-    csrf.status === 200,
     "sign-in is configured",
+    csrf.status === 200,
     "AUTH_SECRET (runtime) -- without it every sign-in ends at ?error=Configuration, " +
       "while the rest of the site behaves normally",
   );
@@ -57,8 +54,8 @@ try {
   const contact = await body("/contact");
   const widget = contact.text.includes("cf-turnstile");
   check(
-    widget,
     "the contact form carries its spam widget",
+    widget,
     "NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY (build time -- needs a rebuild, not a redeploy).\n" +
       "          Worse than a missing widget: with CF_TURNSTILE_SECRET_KEY also unset,\n" +
       "          verifyTurnstile() returns true and the form has no spam check at all.",
@@ -67,13 +64,13 @@ try {
   /* --------------------------------------------------------- dashboard */
   const dashboard = await body("/dashboard");
   check(
-    dashboard.text.includes("aria-label=\"In the editor\""),
     "the dashboard's WakaTime panel renders",
+    dashboard.text.includes("aria-label=\"In the editor\""),
     "WAKATIME_ACCESS_TOKEN (runtime) -- the panel is absent rather than broken",
   );
   check(
-    dashboard.text.includes("aria-label=\"On GitHub\""),
     "the dashboard's GitHub panel renders",
+    dashboard.text.includes("aria-label=\"On GitHub\""),
     "GITHUB_ACCESS_TOKEN (runtime) -- the panel is absent rather than broken",
   );
 
@@ -81,14 +78,14 @@ try {
   const home = await body("/");
   const media = home.text.match(/https?:\/\/[\w-]+\.supabase\.co\/[^"'\\ ]+/);
   check(
-    Boolean(media),
     "uploaded media is served from the storage host",
+    Boolean(media),
     "STORAGE_SUPABASE_URL (build time and runtime) -- images fall back to nothing",
   );
   if (media) {
     // The URL being in the markup is not the same as the object being there.
     const asset = await fetch(media[0].replace(/&amp;/g, "&"), { method: "HEAD" });
-    check(asset.ok, "and the object actually exists", `${asset.status} for ${media[0].slice(0, 80)}`);
+    check("and the object actually exists", asset.ok, `${asset.status} for ${media[0].slice(0, 80)}`);
   }
 
   /* --------------------------------------------------------- canonical */
@@ -103,21 +100,15 @@ try {
     console.log(`  ..    canonical is ${canonical || "unset"}, not compared against a dev server`);
   } else {
     check(
-      canonical.startsWith(BASE),
       "the canonical URL names this site",
+      canonical.startsWith(BASE),
       `NEXT_PUBLIC_BASE_URL (build time) -- it says ${canonical || "nothing"}, ` +
         `which is what every sitemap entry and every og:url will say too`,
     );
   }
 } catch (error) {
-  failures++;
-  console.log(`  FAIL  ${error.message}`);
+  check(error.message, false);
   console.log(`\nIs ${BASE} reachable?`);
 }
 
-console.log(
-  failures === 0
-    ? "\nEvery environment-dependent feature is switched on."
-    : `\n${failures} feature(s) are silently off. Each names the variable and where it is read.`,
-);
-process.exit(failures === 0 ? 0 : 1);
+process.exit(finish("Every environment-dependent feature is switched on.", "Each names the variable and where it is read."));

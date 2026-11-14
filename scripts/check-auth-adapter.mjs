@@ -20,6 +20,7 @@
  *   node --env-file=.env.local scripts/check-auth-adapter.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -28,11 +29,7 @@ const { accountAdapter, touchLogin } = await import("../lib/auth/adapter.ts");
 const { getUserProfile } = await import("../lib/auth/profile.ts");
 const { sql } = await import("drizzle-orm");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass, detail });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /** A marker no live row could carry, so a leak would be obvious. */
 const STAMP = `zz-adapter-check-${Date.now()}`;
@@ -257,8 +254,4 @@ check("no marker rows survive", leaked === 0, `${leaked} found`);
 
 await pool.end();
 
-const failed = checks.filter((c) => !c.pass);
-console.log(failed.length === 0
-  ? `\nAll ${checks.length} adapter checks passed against the live schema.`
-  : `\n${failed.length} of ${checks.length} checks FAILED.`);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} adapter checks passed against the live schema.`));

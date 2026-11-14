@@ -370,7 +370,7 @@ export const ADMIN_ENTRIES: AdminEntry[] = [
     label: "Patch note",
     labelPlural: "Patch notes",
     group: "Site",
-    blurb: "One per push to main, written by the release workflow. Reword or hide one here.",
+    blurb: "One per push to main that passes CI, written by the release workflow. Reword or hide one here.",
   },
 
   /*

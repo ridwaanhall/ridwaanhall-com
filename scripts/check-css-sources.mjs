@@ -21,6 +21,7 @@
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { reporter } from "./harness.mjs";
 
 /**
  * Utility families the site deliberately does not use.
@@ -63,7 +64,7 @@ if (sheets.length === 0) {
   process.exit(1);
 }
 
-let failures = 0;
+const { check, finish } = reporter();
 for (const { name, pattern } of FORBIDDEN) {
   const hits = new Set();
   for (const sheet of sheets) {
@@ -71,16 +72,12 @@ for (const { name, pattern } of FORBIDDEN) {
       hits.add(match[0].replace(/\s*\{$/, ""));
     }
   }
-  const ok = hits.size === 0;
-  if (!ok) failures++;
-  console.log(
-    `  ${ok ? "ok  " : "FAIL"}  no ${name} utilities are emitted${ok ? "" : `  ${[...hits].join(", ")}`}`,
-  );
+  check(`no ${name} utilities are emitted`, hits.size === 0, [...hits].join(", "));
 }
 
-console.log(
-  failures === 0
-    ? `\nThe compiled CSS is clean (${sheets.length} sheet(s)).`
-    : `\n${failures} check(s) FAILED. Something in the tree names a utility the site does not use — check the @source not lines in app/globals.css, and any comment you just wrote.`,
+process.exit(
+  finish(
+    `The compiled CSS is clean (${sheets.length} sheet(s)).`,
+    "Something in the tree names a utility the site does not use — check the @source not lines in app/globals.css, and any comment you just wrote.",
+  ),
 );
-process.exit(failures === 0 ? 0 : 1);

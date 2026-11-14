@@ -17,25 +17,15 @@
  * nothing, because a missing fixture is a broken run and not an empty result.
  */
 import { config } from "dotenv";
-import pg from "pg";
+import { pgPool } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
 let pool;
 
+/** Opened on the first lookup, so importing this for one helper connects nothing. */
 function client() {
-  if (!pool) {
-    // `pg` reads `sslmode=require` as `verify-full`, which the pooler
-    // certificate does not satisfy -- the same reason `lib/db/client.ts`
-    // configures TLS in code.
-    const url = new URL(process.env.STORAGE_POSTGRES_URL);
-    url.searchParams.delete("sslmode");
-    pool = new pg.Pool({
-      connectionString: url.toString(),
-      max: 1,
-      ssl: { rejectUnauthorized: false },
-    });
-  }
+  pool ??= pgPool(1);
   return pool;
 }
 

@@ -18,8 +18,9 @@
  *   node scripts/check-notifications.mjs [base]
  */
 import { chromium } from "playwright";
+import { baseUrl } from "./harness.mjs";
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 const PATHS = ["/", "/about/", "/blog/"];
 
 const browser = await chromium.launch();

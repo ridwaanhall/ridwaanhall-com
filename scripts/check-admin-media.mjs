@@ -41,6 +41,7 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -56,11 +57,7 @@ const { imageMeta, keyForMediaId, mediaIdForKey } = await import("../lib/admin/m
 const { objectExists } = await import("../lib/storage/objects.ts");
 const { eq, isNotNull } = await import("drizzle-orm");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -184,8 +181,7 @@ if (sample) {
   check("key -> id is the same row", (await mediaIdForKey(key)) === sample.id);
 }
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(`\n${checks.length - failed.length}/${checks.length} passed\n`);
+const exitCode = finish();
 
 await pool.end();
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(exitCode);

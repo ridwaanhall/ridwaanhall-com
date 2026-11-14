@@ -22,6 +22,7 @@
  *   npx tsx --conditions=react-server scripts/check-storage.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -38,11 +39,7 @@ const { deleteUnreferenced, isReferenced, FILE_COLUMNS } = await import(
 );
 const { objectKeyFor } = await import("../lib/storage/keys.ts");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 if (!storageConfigured()) {
   console.log("Supabase Storage is not configured — nothing to check.");
@@ -238,10 +235,4 @@ try {
   await pool.end();
 }
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} storage checks passed.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} storage checks passed.`));

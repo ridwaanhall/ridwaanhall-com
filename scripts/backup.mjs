@@ -18,7 +18,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 
 import { config } from "dotenv";
-import pg from "pg";
+import { connection, pgClient } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -31,17 +31,11 @@ if (!["export", "restore"].includes(command) || (command === "restore" && !file)
   process.exit(1);
 }
 
-const raw = process.env.BACKUP_DATABASE_URL ?? process.env.STORAGE_POSTGRES_URL_NON_POOLING ?? process.env.STORAGE_POSTGRES_URL;
-if (!raw) {
-  console.error("No database URL: set BACKUP_DATABASE_URL or STORAGE_POSTGRES_URL_NON_POOLING.");
-  process.exit(1);
-}
-const url = new URL(raw);
-// TLS as `lib/db/client.ts` sets it, unless the URL says `sslmode=disable` --
-// a database with no TLS at all, such as a local one restored into to test.
-const ssl = url.searchParams.get("sslmode") === "disable" ? false : { rejectUnauthorized: false };
-url.searchParams.delete("sslmode");
-const client = new pg.Client({ connectionString: url.toString(), ssl });
+// `BACKUP_DATABASE_URL` wins so a restore can be pointed somewhere else, such as
+// a local database with `sslmode=disable` to rehearse one.
+const SOURCES = ["BACKUP_DATABASE_URL", "STORAGE_POSTGRES_URL_NON_POOLING", "STORAGE_POSTGRES_URL"];
+const url = new URL(connection(...SOURCES).connectionString);
+const client = pgClient(...SOURCES);
 await client.connect();
 console.log(`Database: ${url.host}${url.pathname}`);
 

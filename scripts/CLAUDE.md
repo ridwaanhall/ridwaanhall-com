@@ -65,7 +65,14 @@ signed-in request needs from the base URL -- `baseUrl()`, the session cookie's
 name (`__Secure-` over https), a minted token salted with it, and a cookie scope
 for that host -- so every browser harness runs against a deployment as well as
 the dev server when given its address; **a new harness takes all of these from
-it rather than writing `localhost` or the cookie name down.** The second
+it rather than writing `localhost` or the cookie name down.** It also holds the
+two things every harness used to write for itself: `reporter()`, whose
+`check(name, pass, detail)` prints one line per check and whose
+`finish(passed, hint)` prints the closing line and returns the exit code
+(`{ detailOnFailure: true }` for details that only explain a failure), and
+`pgPool(max)` / `pgClient()`, a pooled or direct `pg` connection with TLS set in
+code as `lib/db/client.ts` sets it -- the direct one for DDL and anything that
+needs a session of its own. The second
 resolves the staff and reader accounts and the rows a harness drives instead of
 writing keys down. `scripts/mint-session.mjs <userId> [baseUrl]` prints a
 session cookie from the command line.

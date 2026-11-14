@@ -27,14 +27,13 @@
  *   npx tsx --conditions=react-server scripts/check-admin-forms.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId, nonStaffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
 const { ADMIN_ENTRIES_BY_KEY, adminPath } = await import("../lib/admin/registry.ts");
 const { category, guestMessage, organization, skill, account } = await import(
@@ -71,18 +70,9 @@ const ORGANIZATION = screen("organization");
 /** Distinctive enough that a leftover row is obviously this script's. */
 const MARK = `zz-admin-form-check-${Date.now()}`;
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
-const token = await encode({
-  token: { sub: STAFF_ID },
-  secret: process.env.AUTH_SECRET,
-  salt: COOKIE,
-  maxAge: 60 * 15,
-});
+const token = await mintSession(STAFF_ID, BASE, 60 * 15);
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
@@ -578,10 +568,4 @@ try {
   await pool.end();
 }
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} form checks passed.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} form checks passed.`));

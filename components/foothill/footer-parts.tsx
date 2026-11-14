@@ -58,7 +58,11 @@ export function GiantWord({ word }: { word: string }) {
   return <span ref={ref}>{word}</span>;
 }
 
-/** "This page as Markdown", on the footer's bottom line of every page that has one. */
+/**
+ * "This page as Markdown", on the footer's bottom line of every page that has
+ * one. A not-found page under a twin-shaped path hides it (`data-twin`, in
+ * styles/site.css): the path cannot say whether the page behind it exists.
+ */
 export function FooterTwin() {
   const pathname = usePathname();
   if (!hasTwin(pathname)) return null;
@@ -66,6 +70,7 @@ export function FooterTwin() {
   return (
     <a
       className="ul"
+      data-twin=""
       href={file}
       onClick={(event) => {
         event.preventDefault();

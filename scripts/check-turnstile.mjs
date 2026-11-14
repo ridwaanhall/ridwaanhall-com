@@ -17,16 +17,13 @@
  *   npx tsx --conditions=react-server scripts/check-turnstile.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
 const { turnstileEnabled, verifyTurnstile } = await import("../lib/email/turnstile.ts");
 
-const checks = [];
-const check = (name, pass) => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}`);
-};
+const { check, finish } = reporter();
 
 if (!turnstileEnabled()) {
   // Without a secret the verifier passes by design, which is the
@@ -47,10 +44,6 @@ check(
   (await verifyTurnstile("nope", "203.0.113.1")) === false,
 );
 
-const failed = checks.filter((c) => !c.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} Turnstile checks passed — it fails closed.`
-    : `\n${failed.length} of ${checks.length} checks FAILED.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+// Set rather than `process.exit`: exiting while fetch's socket is still closing
+// trips a libuv assertion on Windows, and the run reads as failed.
+process.exitCode = finish((n) => `All ${n} Turnstile checks passed — it fails closed.`);

@@ -19,19 +19,16 @@
  * check fails if the policy omits one.
  */
 import { config } from "dotenv";
+import { baseUrl, reporter } from "./harness.mjs";
 
 // The Supabase host is the one origin here that is not a literal, and checking
 // a policy without it would leave the site's own uploaded media unverified.
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `  ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
 const get = async (path) => {
   const response = await fetch(`${BASE}${path}`, { redirect: "manual" });
@@ -105,8 +102,8 @@ try {
 
   for (const [name, valid, expected] of REQUIRED) {
     const value = headers.get(name);
-    check(value !== null, `${name} is set`, `expected ${expected}`);
-    if (value !== null) check(valid(value), `${name} says what it should`, `got "${value}"`);
+    check(`${name} is set`, value !== null, `expected ${expected}`);
+    if (value !== null) check(`${name} says what it should`, valid(value), `got "${value}"`);
   }
 
   /*
@@ -116,7 +113,7 @@ try {
    */
   const enforced = headers.get("content-security-policy");
   const raw = headers.get("content-security-policy-report-only") ?? enforced;
-  check(raw !== null, "a content security policy is set", "neither enforcing nor report-only");
+  check("a content security policy is set", raw !== null, "neither enforcing nor report-only");
 
   /*
    * What is enforced today is the part that cannot take a script down: no
@@ -124,9 +121,9 @@ try {
    * watched, report-only.
    */
   const hard = parsePolicy(enforced ?? "");
-  check(hard["frame-ancestors"]?.includes("'none'"), "the enforced policy forbids framing", `got ${enforced ?? "nothing"}`);
-  check(hard["base-uri"]?.includes("'self'"), "the enforced policy pins base-uri", `got ${enforced ?? "nothing"}`);
-  check(hard["object-src"]?.includes("'none'"), "the enforced policy forbids plugins", `got ${enforced ?? "nothing"}`);
+  check("the enforced policy forbids framing", hard["frame-ancestors"]?.includes("'none'"), `got ${enforced ?? "nothing"}`);
+  check("the enforced policy pins base-uri", hard["base-uri"]?.includes("'self'"), `got ${enforced ?? "nothing"}`);
+  check("the enforced policy forbids plugins", hard["object-src"]?.includes("'none'"), `got ${enforced ?? "nothing"}`);
 
   if (raw) {
     console.log(`        (full policy: ${headers.get("content-security-policy-report-only") ? "report-only" : "enforcing"})`);
@@ -135,8 +132,8 @@ try {
 
     for (const [directive, source] of REQUIRED_DIRECTIVES) {
       check(
-        policy[directive]?.includes(source),
         `${directive} is ${source}`,
+        policy[directive]?.includes(source),
         `got ${policy[directive]?.join(" ") ?? "nothing"}`,
       );
     }
@@ -145,15 +142,15 @@ try {
       const listed = policy[directive] ?? [];
       const missing = origins.filter((origin) => !listed.includes(origin));
       check(
-        missing.length === 0,
         `${directive} names every origin the app loads from (${origins.length})`,
+        missing.length === 0,
         `missing: ${missing.join(", ")}`,
       );
     }
 
     check(
-      !(policy["script-src"] ?? []).includes("'unsafe-eval'"),
       "script-src does not allow eval",
+      !(policy["script-src"] ?? []).includes("'unsafe-eval'"),
     );
 
     /*
@@ -167,14 +164,14 @@ try {
       const group = policy["report-to"]?.[0];
       const endpoints = headers.get("reporting-endpoints") ?? "";
       check(
-        Boolean(policy["report-uri"] || group),
         "a report-only policy says where to send reports",
+        Boolean(policy["report-uri"] || group),
         "neither report-to nor report-uri is set, so nothing is collected",
       );
       if (group) {
         check(
-          endpoints.includes(`${group}=`),
           `Reporting-Endpoints defines the "${group}" group`,
+          endpoints.includes(`${group}=`),
           `report-to names it and the header does not: ${endpoints || "(absent)"}`,
         );
       }
@@ -184,19 +181,13 @@ try {
   // A header set only on the document is a header most requests do not get.
   const api = await get("/api/blog?all=1");
   check(
-    api.get("x-content-type-options") === "nosniff",
     "the headers reach an API route too, not only a page",
+    api.get("x-content-type-options") === "nosniff",
     `got "${api.get("x-content-type-options")}"`,
   );
 } catch (error) {
-  failures++;
-  console.log(`  FAIL  ${error.message}`);
+  check(error.message, false);
   console.log(`\nIs the app running at ${BASE}? (npm run dev)`);
 }
 
-console.log(
-  failures === 0
-    ? "\nEvery response is carrying its security headers."
-    : `\n${failures} check(s) failed.`,
-);
-process.exit(failures === 0 ? 0 : 1);
+process.exit(finish("Every response is carrying its security headers."));

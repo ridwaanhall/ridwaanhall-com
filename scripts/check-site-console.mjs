@@ -28,14 +28,13 @@
  *   npx tsx --conditions=react-server scripts/check-site-console.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId, nonStaffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { db } = await import("../lib/db/client.ts");
 const { blogPost, legalDocument, project } = await import("../lib/db/app-schema.ts");
 const { asc } = await import("drizzle-orm");
@@ -43,11 +42,7 @@ const { asc } = await import("drizzle-orm");
 const BASE = baseUrl();
 const COOKIE = sessionCookieName(BASE);
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push(pass);
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /**
  * Noise a clean page still produces, and which asserting on would only teach
@@ -110,7 +105,7 @@ const ROUTES = [
 const EXPECT_MISSING = new Set(["/blog/zz-no-such-post"]);
 
 const mint = async (sub) =>
-  encode({ token: { sub }, secret: process.env.AUTH_SECRET, salt: COOKIE, maxAge: 60 * 30 });
+  mintSession(sub, BASE, 60 * 30);
 
 /*
  * `sub: "1"` is not a made-up value. It is what every session token minted
@@ -240,10 +235,4 @@ for (const state of STATES) {
 
 await browser.close();
 
-const failed = checks.filter((pass) => !pass).length;
-console.log(
-  failed === 0
-    ? `\nThe site is quiet across ${ROUTES.length} pages in ${STATES.length} sign-in states.`
-    : `\n${failed} check(s) FAILED.`,
-);
-process.exit(failed === 0 ? 0 : 1);
+process.exit(finish(`The site is quiet across ${ROUTES.length} pages in ${STATES.length} sign-in states.`));

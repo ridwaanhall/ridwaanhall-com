@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <main className={MAIN} data-quiet="">
+    <main className={MAIN} data-quiet="" data-missing="">
       <div>
         <Unpublished kind="project" />
       </div>

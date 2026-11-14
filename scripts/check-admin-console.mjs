@@ -33,14 +33,13 @@
  *   npx tsx --conditions=react-server scripts/check-admin-console.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { ADMIN_ENTRIES, adminPath } = await import("../lib/admin/registry.ts");
 const { formModelFor, listModelFor } = await import("../lib/admin/models/index.ts");
 const { db } = await import("../lib/db/client.ts");
@@ -48,11 +47,7 @@ const { db } = await import("../lib/db/client.ts");
 const BASE = baseUrl();
 const COOKIE = sessionCookieName(BASE);
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push(pass);
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /**
  * Noise a clean page still produces, and which asserting on would only teach
@@ -94,12 +89,7 @@ for (const entry of ADMIN_ENTRIES) {
   if (formModelFor(entry.key)?.canCreate !== false) routes.push(`${screen}/new`);
 }
 
-const token = await encode({
-  token: { sub: await staffAccountId() },
-  secret: process.env.AUTH_SECRET,
-  salt: COOKIE,
-  maxAge: 60 * 30,
-});
+const token = await mintSession(await staffAccountId(), BASE, 60 * 30);
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
@@ -166,10 +156,4 @@ for (const fault of faults) {
 
 await browser.close();
 
-const failed = checks.filter((pass) => !pass).length;
-console.log(
-  failed === 0
-    ? `\nThe admin is quiet across ${routes.length} screens.`
-    : `\n${failed} check(s) FAILED.`,
-);
-process.exit(failed === 0 ? 0 : 1);
+process.exit(finish(`The admin is quiet across ${routes.length} screens.`));

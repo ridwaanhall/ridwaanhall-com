@@ -30,7 +30,7 @@
  *   npx tsx --conditions=react-server scripts/check-admin-controls.mjs [base]
  */
 import { readFileSync } from "node:fs";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 import { config } from "dotenv";
 
@@ -39,7 +39,6 @@ config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
 const { staffAccountId } = await import("./fixture-ids.mjs");
-const { encode } = await import("next-auth/jwt");
 const { db, pool } = await import("../lib/db/client.ts");
 const { applicationStep, category, skill } = await import("../lib/db/app-schema.ts");
 const { ADMIN_ENTRIES_BY_KEY, adminPath } = await import("../lib/admin/registry.ts");
@@ -60,11 +59,7 @@ const SETTLE = 500;
  */
 const SKILL = adminPath(ADMIN_ENTRIES_BY_KEY.get("skill"));
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /* -------------------------------------------------------------------------
    1. The stylesheet cannot reach the public site
@@ -119,12 +114,7 @@ const check = (name, pass, detail = "") => {
   );
 }
 
-const token = await encode({
-  token: { sub: await staffAccountId() },
-  secret: process.env.AUTH_SECRET,
-  salt: COOKIE,
-  maxAge: 60 * 15,
-});
+const token = await mintSession(await staffAccountId(), BASE, 60 * 15);
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 950 } });
@@ -574,10 +564,4 @@ try {
   await pool.end();
 }
 
-const failed = checks.filter((entry) => !entry.pass).length;
-console.log(
-  failed === 0
-    ? `\nAll ${checks.length} control checks passed.`
-    : `\n${failed} of ${checks.length} control checks FAILED.`,
-);
-process.exit(failed === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} control checks passed.`));

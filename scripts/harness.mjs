@@ -10,8 +10,13 @@
  * runs signed out against a real address while looking signed in. Every value
  * here is derived from the base URL, once, for every harness.
  *
+ * The same goes for the two other things every harness used to write out for
+ * itself: the line-per-check reporter, and a `pg` connection with TLS set the
+ * way Supabase needs it.
+ *
  * Not a check: imported by the harnesses, and by `mint-session.mjs`.
  */
+import pg from "pg";
 
 /** The app under test: argv[2] when it is an address, else the dev server, without a trailing slash. */
 export function baseUrl(arg = process.argv[2]) {
@@ -49,4 +54,67 @@ export async function mintSession(sub, base, maxAgeSeconds = 60 * 10) {
 /** A ready-to-add Playwright cookie carrying a fresh session for `sub` at `base`. */
 export async function sessionCookie(sub, base, maxAgeSeconds) {
   return { name: sessionCookieName(base), value: await mintSession(sub, base, maxAgeSeconds), ...cookieScope(base) };
+}
+
+/**
+ * One line per check, and the exit code at the end.
+ *
+ * `check(name, pass, detail)` prints `ok`/`FAIL`, the name, and the detail when
+ * there is one -- or only when the check failed, with `{ detailOnFailure: true }`,
+ * for a harness whose details are the explanation of a failure rather than a
+ * reading worth seeing either way. It returns `pass` so a later step can
+ * depend on it.
+ * `finish(passed, hint)` prints the closing line and returns 0 or 1 for
+ * `process.exit` (or `process.exitCode`, where a pool is still draining).
+ * `passed` may be a function of the number of checks; `hint` follows the
+ * failure count, for the harness that knows what a failure usually means.
+ */
+export function reporter({ detailOnFailure = false } = {}) {
+  let total = 0;
+  let failed = 0;
+  const check = (name, pass, detail = "") => {
+    total++;
+    if (!pass) failed++;
+    const shown = detail && !(pass && detailOnFailure);
+    console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${shown ? `  ${detail}` : ""}`);
+    return Boolean(pass);
+  };
+  const finish = (passed = (n) => `All ${n} checks passed.`, hint = "") => {
+    if (failed === 0) {
+      console.log(`\n${typeof passed === "function" ? passed(total) : passed}`);
+      return 0;
+    }
+    console.log(`\n${failed} of ${total} checks FAILED.${hint ? ` ${hint}` : ""}`);
+    return 1;
+  };
+  return { check, finish };
+}
+
+/**
+ * Connection settings for the first of `names` that is set, as `lib/db/client.ts`
+ * makes them: `pg` reads `sslmode=require` as `verify-full`, which Supabase's
+ * certificate does not satisfy, so the parameter is stripped and TLS set in code
+ * -- off only when the URL itself says `sslmode=disable`.
+ */
+export function connection(...names) {
+  const name = names.find((candidate) => process.env[candidate]);
+  if (!name) throw new Error(`${names.join(" or ")} is not set (see .env.example); load .env.local first.`);
+  const url = new URL(process.env[name]);
+  const ssl = url.searchParams.get("sslmode") === "disable" ? false : { rejectUnauthorized: false };
+  url.searchParams.delete("sslmode");
+  return { connectionString: url.toString(), ssl };
+}
+
+/** A pool through the transaction pooler, for a harness that queries rather than holding a session. */
+export function pgPool(max = 2, ...names) {
+  return new pg.Pool({ ...connection(...(names.length ? names : ["STORAGE_POSTGRES_URL"])), max });
+}
+
+/**
+ * One direct connection, for DDL and anything that needs a session of its own
+ * (a transaction spanning statements, `set local`): the transaction pooler
+ * would hand each statement a different server connection.
+ */
+export function pgClient(...names) {
+  return new pg.Client(connection(...(names.length ? names : ["STORAGE_POSTGRES_URL_NON_POOLING"])));
 }

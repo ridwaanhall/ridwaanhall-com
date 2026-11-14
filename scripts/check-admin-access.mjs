@@ -23,13 +23,12 @@
  *   npx tsx --conditions=react-server scripts/check-admin-access.mjs [base]
  */
 import { config } from "dotenv";
-import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
+import { baseUrl, cookieScope, mintSession, reporter, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
 const { chromium } = await import("playwright");
-const { encode } = await import("next-auth/jwt");
 const { ADMIN_ENTRIES, ADMIN_ENTRIES_BY_KEY, adminPath } = await import(
   "../lib/admin/registry.ts"
 );
@@ -40,11 +39,7 @@ const { idWhere } = await import("./fixture-ids.mjs");
 
 const BASE = baseUrl();
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /**
  * Cells of a changelist body, one array per row.
@@ -65,12 +60,7 @@ function rows(html) {
 const cookieName = sessionCookieName(BASE);
 
 async function session(userId) {
-  const token = await encode({
-    token: { sub: String(userId) },
-    secret: process.env.AUTH_SECRET,
-    salt: cookieName,
-    maxAge: 60 * 10,
-  });
+  const token = await mintSession(String(userId), BASE, 60 * 10);
   return `${cookieName}=${token}`;
 }
 
@@ -767,10 +757,4 @@ try {
   await pool.end();
 }
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} access checks passed.`
-    : `\n${failed.length} of ${checks.length} failed.`,
-);
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(finish((n) => `All ${n} access checks passed.`));

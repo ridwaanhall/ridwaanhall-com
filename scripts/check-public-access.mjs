@@ -20,6 +20,7 @@
  *   npx tsx scripts/check-public-access.mjs
  */
 import { config } from "dotenv";
+import { reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -30,11 +31,7 @@ const { getUserProfiles } = await import("../lib/auth/profile.ts");
 const { publicCapabilities } = await import("../lib/auth/public.ts");
 const { like, sql } = await import("drizzle-orm");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push({ name, pass });
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 const ROLLBACK = Symbol("rollback");
 const stamp = Date.now();
@@ -250,12 +247,7 @@ const [{ left }] = await db
 
 check("the transaction was rolled back, so no account was created", left === 0, `${left} left`);
 
-const failed = checks.filter((entry) => !entry.pass);
-console.log(
-  failed.length === 0
-    ? `\nAll ${checks.length} public access checks passed.`
-    : `\n${failed.length} of ${checks.length} failed.`,
-);
+const exitCode = finish((n) => `All ${n} public access checks passed.`);
 
 await pool.end();
-process.exit(failed.length === 0 ? 0 : 1);
+process.exit(exitCode);

@@ -24,21 +24,15 @@
  * that is rolled back.
  */
 import { config } from "dotenv";
-import pg from "pg";
+import { pgPool, reporter } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
 const STAMP = Date.now();
 
-let failures = 0;
-const check = (ok, label, detail = "") => {
-  if (!ok) failures++;
-  console.log(`  ${ok ? "ok  " : "FAIL"}  ${label}${ok || !detail ? "" : `\n          ${detail}`}`);
-};
+const { check, finish } = reporter({ detailOnFailure: true });
 
-const url = new URL(process.env.STORAGE_POSTGRES_URL);
-url.searchParams.delete("sslmode");
-const pool = new pg.Pool({ connectionString: url.toString(), max: 4, ssl: { rejectUnauthorized: false } });
+const pool = pgPool(4);
 
 console.log("Drafts\n");
 
@@ -72,8 +66,8 @@ try {
     [[draft, live]],
   );
   const seen = new Set(visible.map((r) => r.id));
-  check(!seen.has(draft), "a draft post is not among the rows the site reads");
-  check(seen.has(live), "and an otherwise identical published one is");
+  check("a draft post is not among the rows the site reads", !seen.has(draft));
+  check("and an otherwise identical published one is", seen.has(live));
 
   const draftProject = await project(`zz-draft-project-${STAMP}`, false);
   const liveProject = await project(`zz-live-project-${STAMP}`, true);
@@ -82,8 +76,8 @@ try {
     [[draftProject, liveProject]],
   );
   const seenProjects = new Set(visibleProjects.map((r) => r.id));
-  check(!seenProjects.has(draftProject), "a draft project is not either");
-  check(seenProjects.has(liveProject), "and a published one is");
+  check("a draft project is not either", !seenProjects.has(draftProject));
+  check("and a published one is", seenProjects.has(liveProject));
 
   /*
    * The column has to default to off, or a create through the admin publishes
@@ -96,7 +90,7 @@ try {
        where table_schema = 'app' and table_name = $1 and column_name = 'is_published'`,
       [table],
     );
-    check(rows[0]?.d === "false", `${table}.is_published defaults to off`, `default is ${rows[0]?.d}`);
+    check(`${table}.is_published defaults to off`, rows[0]?.d === "false", `default is ${rows[0]?.d}`);
   }
 
   await client.query("rollback");
@@ -105,7 +99,7 @@ try {
     "select 1 from app.blog_post where slug like $1 union all select 1 from app.project where slug like $1",
     [`zz-%-${STAMP}`],
   );
-  check(left.length === 0, "the rollback left nothing behind", `${left.length} row(s) survived`);
+  check("the rollback left nothing behind", left.length === 0, `${left.length} row(s) survived`);
 } finally {
   client.release();
 }
@@ -126,14 +120,13 @@ try {
       "union all select slug from app.project where slug like 'zz-%'",
   );
   check(
-    rows.length === 0,
     "no harness row is left anywhere in the content",
+    rows.length === 0,
     `still there: ${rows.map((r) => r.slug).join(", ")}`,
   );
 }
 
 await pool.end();
-console.log(failures ? `\n${failures} check(s) failed.` : "\nA draft stays a draft.");
 // Set rather than `process.exit`, which tears the loop down under the pool's own
 // teardown and trips a libuv assertion on Windows.
-process.exitCode = failures ? 1 : 0;
+process.exitCode = finish("A draft stays a draft.");

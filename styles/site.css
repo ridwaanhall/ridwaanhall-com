@@ -829,6 +829,13 @@ body:has(.fh-site) {
 .fh-site:has(main[data-quiet]) .cta-band { display: none; }
 .fh-site:has(main[data-quiet]) .foot { border-top: 1px solid var(--fh-line); }
 
+/*
+ * A page that does not exist has no twin, though its path may be shaped like
+ * one that would: the footer decides from the path alone, so the not-found
+ * pages mark themselves and the offer steps aside here, before any script.
+ */
+.fh-site:has(main[data-missing]) [data-twin] { display: none; }
+
 .fh-site .palette li a .out-mark { display: inline; margin-left: 4px; vertical-align: -1px; }
 .fh-site .palette li { cursor: pointer; }
 

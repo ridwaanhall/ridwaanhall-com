@@ -45,14 +45,11 @@
  */
 import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
+import { reporter } from "./harness.mjs";
 
 const APP = path.resolve(import.meta.dirname, "..", "app");
 
-const checks = [];
-const check = (name, pass, detail = "") => {
-  checks.push(pass);
-  console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
-};
+const { check, finish } = reporter();
 
 /** Every directory under `app/`, as a path relative to it. */
 function walk(dir, rel = "") {
@@ -109,6 +106,4 @@ for (const dir of skeletons) {
   );
 }
 
-const failed = checks.filter((pass) => !pass).length;
-console.log(`\n${checks.length - failed}/${checks.length} checks passed`);
-process.exit(failed ? 1 : 0);
+process.exit(finish());

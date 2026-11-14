@@ -36,6 +36,23 @@ names a pricing page rather than a build error. Note too that `updateTag` is
 refused outside a Server Action, so a route handler doing that job would need
 `revalidateTag(TAGS.blog, "max")`, called only when a row actually moved.
 
+**A write expires routes as well as tags, through `expire()` in
+`lib/data/expire.ts`.** The build leaves one generic shell per `[slug]` route,
+and it carries a snapshot of `getProjects()` (or `getBlogs()`) taken at build
+time. Every slug the build did not prerender -- anything published since the
+deploy -- reads that snapshot, and expiring the `project` tag does not reach it
+because the shell is listed under the layout's tags only. Five projects
+published that way answered "not out yet" in production, with the listing
+beside them already up to date, until the site was redeployed. `expire()`
+expires the tags and then `revalidatePath`s every route `ROUTE_TAGS` says reads
+one of them, which rebuilds the shell from current data. Two things keep it
+honest: `ROUTE_TAGS` is keyed by the file path **with its route group**
+(`/(site)/projects/[slug]`; without the group the call matches nothing and
+says nothing), and only a production server shows the bug at all -- `next dev`
+caches no routes, so `scripts/check-publish-reaches-page.mjs` runs against
+`next start`. Any new writer goes through `expire()` rather than calling
+`updateTag` itself.
+
 There is **no preview of a draft yet**. Seeing one rendered means publishing it,
 looking, and unpublishing -- the article page is one file of inline JSX rather
 than a component something else could render, and `draftMode()` is not the way

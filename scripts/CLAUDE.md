@@ -30,6 +30,7 @@ npx tsx scripts/check-auth-adapter.mjs                 # Auth.js vs the live sch
 npx tsx scripts/check-comments.mjs                     # comment rules, rolled back
 node scripts/check-drafts.mjs                           # a draft stays a draft
 node scripts/check-markdown.mjs                         # every page has a .md twin, no draft does
+npx tsx --conditions=react-server scripts/check-publish-reaches-page.mjs http://localhost:3002  # publish → page, no redeploy (needs `next build && next start -p 3002`)
 npx tsx scripts/check-public-access.mjs                # who may post, and what is_active means
 npx tsx scripts/check-emails.mjs                       # all five templates
 npx tsx scripts/check-db-classes.mjs                   # no classes in stored content

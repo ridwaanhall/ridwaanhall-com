@@ -1,10 +1,9 @@
 "use server";
 
-import { updateTag } from "next/cache";
-
 import { getStaffUser } from "@/lib/auth/staff";
 import { restoreBackup } from "@/lib/backup/core";
 import { RESTORE_CONFIRMATION } from "@/lib/backup/order";
+import { expire } from "@/lib/data/expire";
 import { TAGS } from "@/lib/data/tags";
 import { pool } from "@/lib/db/client";
 
@@ -39,7 +38,7 @@ export async function restoreFromUpload(_previous: RestoreState, form: FormData)
   try {
     const result = await restoreBackup(client, parsed);
     if (!result.ok) return { ok: false, error: `${result.error} Nothing was changed.` };
-    for (const tag of Object.values(TAGS)) updateTag(tag);
+    expire(Object.values(TAGS));
     const counts = Object.values(result.restored);
     return { ok: true, tables: counts.length, rows: counts.reduce((sum, n) => sum + n, 0) };
   } finally {

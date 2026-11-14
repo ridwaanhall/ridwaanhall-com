@@ -2,7 +2,7 @@
 
 import { eq, getTableColumns, getTableName, inArray, sql } from "drizzle-orm";
 import type { Route } from "next";
-import { revalidatePath, updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import {
@@ -25,6 +25,7 @@ import { seedDefaultGrants } from "@/lib/auth/grants";
 import { adminPath, ADMIN_ENTRIES_BY_KEY } from "@/lib/admin/registry";
 import { permits } from "@/lib/auth/permissions";
 import { getStaffUser } from "@/lib/auth/staff";
+import { expire } from "@/lib/data/expire";
 import { MODEL_TAGS } from "@/lib/data/tags";
 import { db, type Executor } from "@/lib/db/client";
 import { applyImageFields, imageFields } from "@/lib/admin/images";
@@ -138,7 +139,10 @@ function adminBase(model: AdminFormModel): string {
  * Supabase to rebuild.
  */
 function invalidate(model: AdminFormModel) {
-  for (const tag of MODEL_TAGS[getTableName(model.from)] ?? []) updateTag(tag);
+  // Through `expire`, which also revalidates the per-slug pages that read these
+  // tags: a slug the build did not prerender reads a build-time snapshot that
+  // no tag reaches.
+  expire(MODEL_TAGS[getTableName(model.from)] ?? []);
   revalidatePath(adminBase(model));
 }
 

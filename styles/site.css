@@ -985,8 +985,8 @@ body:has(.fh-site) {
 .fh-site .yai-grid { gap: 28px; }
 .fh-site .sprow .split { border-radius: 2px; }
 
-/* On a phone the page scrolls under the navbar and the back-to-top button, so both are solid rather than see-through (the menu sheet already is). */
-@media (max-width: 639px) {
+/* Under the hamburger layout the page scrolls under the navbar and the back-to-top button, so both are solid rather than see-through (the menu sheet already is). */
+@media (max-width: 1023px) {
   .fh-site .nav { background: var(--fh-bg); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .fh-site .totop { background: var(--fh-bg); }
 }

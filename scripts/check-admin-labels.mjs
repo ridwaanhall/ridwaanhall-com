@@ -37,6 +37,7 @@
  *   npx tsx --conditions=react-server scripts/check-admin-labels.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -49,8 +50,8 @@ const { roleAllows } = await import("../lib/auth/permissions.ts");
 const { formModelFor, listModelFor } = await import("../lib/admin/models/index.ts");
 const { db } = await import("../lib/db/client.ts");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
-const COOKIE = "authjs.session-token";
+const BASE = baseUrl();
+const COOKIE = sessionCookieName(BASE);
 
 /**
  * How far a label may exceed its content, in CSS pixels, on any edge.
@@ -134,7 +135,7 @@ const token = await encode({
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
-await context.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+await context.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
 
 /**
  * Every label on the page, with how far its box reaches past its own content.

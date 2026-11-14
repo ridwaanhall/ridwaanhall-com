@@ -28,6 +28,7 @@
  *   npx tsx --conditions=react-server scripts/check-site-console.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -39,8 +40,8 @@ const { db } = await import("../lib/db/client.ts");
 const { blogPost, legalDocument, project } = await import("../lib/db/app-schema.ts");
 const { asc } = await import("drizzle-orm");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
-const COOKIE = "authjs.session-token";
+const BASE = baseUrl();
+const COOKIE = sessionCookieName(BASE);
 
 const checks = [];
 const check = (name, pass, detail = "") => {
@@ -129,7 +130,7 @@ for (const state of STATES) {
   const context = await browser.newContext({ viewport: { width: 1440, height: 1000 } });
   if (state.token) {
     await context.addCookies([
-      { name: COOKIE, value: state.token, domain: "localhost", path: "/" },
+      { name: COOKIE, value: state.token, ...cookieScope(BASE) },
     ]);
   }
 
@@ -224,7 +225,7 @@ for (const state of STATES) {
 {
   const context = await browser.newContext();
   await context.addCookies([
-    { name: COOKIE, value: await mint("1"), domain: "localhost", path: "/" },
+    { name: COOKIE, value: await mint("1"), ...cookieScope(BASE) },
   ]);
   const page = await context.newPage();
   await page.goto(`${BASE}/guestbook`, { waitUntil: "load" });

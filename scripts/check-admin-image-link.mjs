@@ -41,6 +41,7 @@
  *   npx tsx --conditions=react-server scripts/check-admin-image-link.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -57,8 +58,8 @@ const { keyForMediaId } = await import("../lib/admin/media.ts");
 const { deleteUnreferenced } = await import("../lib/storage/cleanup.ts");
 const { eq } = await import("drizzle-orm");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
-const COOKIE = "authjs.session-token";
+const BASE = baseUrl();
+const COOKIE = sessionCookieName(BASE);
 
 /**
  * Where the screen lives, asked of the registry rather than written down.
@@ -124,7 +125,7 @@ const token = await encode({
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-await context.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+await context.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
 const page = await context.newPage();
 
 /** Rows and objects this run made, cleared in the `finally` whatever happens. */
@@ -406,7 +407,7 @@ try {
 
   const bare = await browser.newContext();
   await bare.route("**/_next/static/chunks/**", (route) => route.abort());
-  await bare.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+  await bare.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
   const barePage = await bare.newPage();
 
   try {

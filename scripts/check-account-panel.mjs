@@ -32,6 +32,7 @@
  *   npx tsx scripts/check-account-panel.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -39,7 +40,7 @@ config({ path: ".env", quiet: true });
 const { encode } = await import("next-auth/jwt");
 const { nonStaffAccountId, staffAccountId } = await import("./fixture-ids.mjs");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 
 const checks = [];
 const check = (name, pass, detail = "") => {
@@ -47,7 +48,7 @@ const check = (name, pass, detail = "") => {
   console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
 };
 
-const cookieName = "authjs.session-token";
+const cookieName = sessionCookieName(BASE);
 
 /*
  * A reader, not staff, on purpose.
@@ -202,7 +203,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
 // --- signed in -------------------------------------------------------------
 {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-  await context.addCookies([{ name: cookieName, value: token, domain: "localhost", path: "/" }]);
+  await context.addCookies([{ name: cookieName, value: token, ...cookieScope(BASE) }]);
   const page = await context.newPage();
   await page.goto(`${BASE}/`, { waitUntil: "load" });
   await waitVisible(page, TRIGGER);
@@ -315,7 +316,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
 {
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
   await context.addCookies([
-    { name: cookieName, value: staffToken, domain: "localhost", path: "/" },
+    { name: cookieName, value: staffToken, ...cookieScope(BASE) },
   ]);
   const page = await context.newPage();
   await page.goto(`${BASE}/`, { waitUntil: "load" });
@@ -413,7 +414,7 @@ const expanded = (page) => page.locator(SHOWN(TRIGGER)).first().getAttribute("ar
 
   // A signed-in reader has no business on a sign-in page.
   const context = await browser.newContext();
-  await context.addCookies([{ name: cookieName, value: token, domain: "localhost", path: "/" }]);
+  await context.addCookies([{ name: cookieName, value: token, ...cookieScope(BASE) }]);
   const page = await context.newPage();
   await page.goto(`${BASE}/sign-in`, { waitUntil: "load" });
   /*

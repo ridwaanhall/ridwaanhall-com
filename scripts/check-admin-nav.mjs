@@ -37,6 +37,7 @@
  * session the same way `check-admin.mjs` does.
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -45,7 +46,7 @@ const { encode } = await import("next-auth/jwt");
 const { staffAccountId } = await import("./fixture-ids.mjs");
 const { ADMIN_SECTIONS, adminPath, sectionTabs } = await import("../lib/admin/registry.ts");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 
 const checks = [];
 const check = (name, pass, detail = "") => {
@@ -53,7 +54,7 @@ const check = (name, pass, detail = "") => {
   console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
 };
 
-const cookieName = "authjs.session-token";
+const cookieName = sessionCookieName(BASE);
 const token = await encode({
   token: { sub: String(await staffAccountId()) },
   secret: process.env.AUTH_SECRET,
@@ -64,7 +65,7 @@ const token = await encode({
 const { chromium } = await import("playwright");
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-await context.addCookies([{ name: cookieName, value: token, domain: "localhost", path: "/" }]);
+await context.addCookies([{ name: cookieName, value: token, ...cookieScope(BASE) }]);
 const page = await context.newPage();
 
 /**
@@ -92,7 +93,7 @@ const expandedCount = async () =>
  * this file assumes.
  */
 await context.addCookies([
-  { name: "admin-rail", value: "full", domain: "localhost", path: "/" },
+  { name: "admin-rail", value: "full", ...cookieScope(BASE) },
 ]);
 
 // --- one group at a time -----------------------------------------------------
@@ -263,8 +264,8 @@ check(
     hasTouch: true,
   });
   await touch.addCookies([
-    { name: cookieName, value: token, domain: "localhost", path: "/" },
-    { name: "admin-rail", value: "mini", domain: "localhost", path: "/" },
+    { name: cookieName, value: token, ...cookieScope(BASE) },
+    { name: "admin-rail", value: "mini", ...cookieScope(BASE) },
   ]);
   const tapPage = await touch.newPage();
   await tapPage.goto(`${BASE}/admin/blog-post`, { waitUntil: "load" });
@@ -322,7 +323,7 @@ check(
  * touch reader with nothing but unlabelled icons.
  */
 await context.addCookies([
-  { name: "admin-rail", value: "mini", domain: "localhost", path: "/" },
+  { name: "admin-rail", value: "mini", ...cookieScope(BASE) },
 ]);
 await page.setViewportSize({ width: 390, height: 800 });
 await page.goto(`${BASE}/admin/blog-post`, { waitUntil: "load" });
@@ -340,7 +341,7 @@ const labelShown = await group("Legal")
 check("and its labels are legible", labelShown === 1, `opacity ${labelShown}`);
 
 await context.addCookies([
-  { name: "admin-rail", value: "full", domain: "localhost", path: "/" },
+  { name: "admin-rail", value: "full", ...cookieScope(BASE) },
 ]);
 
 await browser.close();

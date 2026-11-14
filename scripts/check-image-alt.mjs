@@ -25,6 +25,7 @@
  * that then proves the restore.
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 
@@ -33,8 +34,8 @@ const { staffAccountId } = await import("./fixture-ids.mjs");
 const { encode } = await import("next-auth/jwt");
 const { pool } = await import("../lib/db/client.ts");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
-const COOKIE = "authjs.session-token";
+const BASE = baseUrl();
+const COOKIE = sessionCookieName(BASE);
 const MARK = `zz alt check ${Date.now()}`;
 
 let failures = 0;
@@ -75,7 +76,7 @@ try {
     salt: COOKIE,
     maxAge: 60 * 15,
   });
-  await context.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+  await context.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
   const page = await context.newPage();
 
   /*

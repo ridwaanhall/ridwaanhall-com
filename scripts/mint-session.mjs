@@ -12,37 +12,25 @@
  * does not get you into the admin, because `is_staff` is read from the database
  * on every request (`lib/auth/staff.ts`).
  *
- *   node scripts/mint-session.mjs <userId>
+ *   node scripts/mint-session.mjs <userId> [baseUrl]
+ *
+ * The cookie's name follows the address (`scripts/harness.mjs`), so pass the
+ * deployment's URL when the cookie is for one.
  */
 import { config } from "dotenv";
+
+import { baseUrl, mintSession, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
 
-const { encode } = await import("next-auth/jwt");
-
 const userId = process.argv[2];
 if (!userId) {
-  console.error("usage: node scripts/mint-session.mjs <userId>");
+  console.error("usage: node scripts/mint-session.mjs <userId> [baseUrl]");
   process.exit(1);
 }
 
-const secret = process.env.AUTH_SECRET;
-if (!secret) {
-  console.error("AUTH_SECRET is not set.");
-  process.exit(1);
-}
-
-// `salt` must match the cookie name Auth.js reads, or the token decodes to
-// null and the request is simply anonymous -- which looks like a failing gate
-// rather than a mis-minted cookie.
-const cookieName = "authjs.session-token";
-
-const token = await encode({
-  token: { sub: String(userId) },
-  secret,
-  salt: cookieName,
-  maxAge: 60 * 30,
-});
-
-process.stdout.write(`${cookieName}=${token}\n`);
+const base = baseUrl(process.argv[3]);
+const token = await mintSession(userId, base, 60 * 30);
+process.stdout.write(`${sessionCookieName(base)}=${token}
+`);

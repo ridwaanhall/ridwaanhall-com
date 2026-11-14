@@ -20,6 +20,7 @@
  *   npx tsx --conditions=react-server scripts/check-admin-noop-save.mjs [base] [key…]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -33,9 +34,9 @@ const { ADMIN_FORM_MODELS } = await import("../lib/admin/models/index.ts");
 const { formFields } = await import("../lib/admin/form.ts");
 const { getTableName } = await import("drizzle-orm");
 
-const BASE = process.argv[2]?.startsWith("http") ? process.argv[2] : "http://localhost:3000";
+const BASE = baseUrl();
 const ONLY = process.argv.slice(2).filter((arg) => !arg.startsWith("http"));
-const COOKIE = "authjs.session-token";
+const COOKIE = sessionCookieName(BASE);
 
 const ident = (name) => `"${name.replaceAll('"', '""')}"`;
 const table = (pgTable) => `app.${ident(getTableName(pgTable))}`;
@@ -158,7 +159,7 @@ const token = await encode({
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 900 } });
-await context.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+await context.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
 const page = await context.newPage();
 
 const failures = [];

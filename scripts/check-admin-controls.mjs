@@ -30,6 +30,7 @@
  *   npx tsx --conditions=react-server scripts/check-admin-controls.mjs [base]
  */
 import { readFileSync } from "node:fs";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 import { config } from "dotenv";
 
@@ -47,8 +48,8 @@ const { eq, sql } = await import("drizzle-orm");
 /** Distinctive enough that a leftover row is obviously this script's. */
 const MARK = `zz-admin-controls-${Date.now()}`;
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
-const COOKIE = "authjs.session-token";
+const BASE = baseUrl();
+const COOKIE = sessionCookieName(BASE);
 /** Longer than the 200ms colour transition on `body`. */
 const SETTLE = 500;
 /*
@@ -127,7 +128,7 @@ const token = await encode({
 
 const browser = await chromium.launch();
 const context = await browser.newContext({ viewport: { width: 1280, height: 950 } });
-await context.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+await context.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
 const page = await context.newPage();
 
 try {
@@ -429,7 +430,7 @@ try {
 
     if (step) {
       const zoned = await browser.newContext({ timezoneId: "Asia/Jakarta" });
-      await zoned.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+      await zoned.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
       const zonedPage = await zoned.newPage();
       try {
         await zonedPage.goto(`${BASE}/admin/application/${step.app}`, { waitUntil: "load" });
@@ -518,7 +519,7 @@ try {
   */
   const bare = await browser.newContext();
   await bare.route("**/_next/static/chunks/**", (route) => route.abort());
-  await bare.addCookies([{ name: COOKIE, value: token, domain: "localhost", path: "/" }]);
+  await bare.addCookies([{ name: COOKIE, value: token, ...cookieScope(BASE) }]);
   const barePage = await bare.newPage();
 
   try {

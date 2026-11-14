@@ -27,6 +27,7 @@
  *   npx tsx scripts/check-admin.mjs [base]
  */
 import { config } from "dotenv";
+import { baseUrl, cookieScope, sessionCookieName } from "./harness.mjs";
 
 config({ path: ".env.local", quiet: true });
 config({ path: ".env", quiet: true });
@@ -38,7 +39,7 @@ const { ADMIN_ENTRIES, ADMIN_SECTIONS, adminPath, sectionTabs } = await import(
 const { ADMIN_FORM_MODELS, ADMIN_LIST_MODELS } = await import("../lib/admin/models/index.ts");
 const { staffAccountId, nonStaffAccountId, idWhere } = await import("./fixture-ids.mjs");
 
-const BASE = process.argv[2] ?? "http://localhost:3000";
+const BASE = baseUrl();
 
 /** A staff superuser, and a signed-in reader who is not staff. */
 const STAFF_ID = await staffAccountId();
@@ -50,7 +51,7 @@ const check = (name, pass, detail = "") => {
   console.log(`  ${pass ? "ok  " : "FAIL"}  ${name}${detail ? `  ${detail}` : ""}`);
 };
 
-const cookieName = "authjs.session-token";
+const cookieName = sessionCookieName(BASE);
 
 async function session(userId) {
   const token = await encode({
@@ -562,7 +563,7 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   const browser = await chromium.launch();
   const context = await browser.newContext({ viewport: { width: 390, height: 800 } });
   await context.addCookies([
-    { name: cookieName, value: staff.slice(cookieName.length + 1), domain: "localhost", path: "/" },
+    { name: cookieName, value: staff.slice(cookieName.length + 1), ...cookieScope(BASE) },
   ]);
   const page = await context.newPage();
 
@@ -661,7 +662,7 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
   const bareFilter = await browser.newContext();
   await bareFilter.route("**/_next/static/chunks/**", (route) => route.abort());
   await bareFilter.addCookies([
-    { name: cookieName, value: staff.slice(cookieName.length + 1), domain: "localhost", path: "/" },
+    { name: cookieName, value: staff.slice(cookieName.length + 1), ...cookieScope(BASE) },
   ]);
   const unhydrated = await bareFilter.newPage();
   await unhydrated.goto(`${BASE}/admin/blog-post`, { waitUntil: "domcontentloaded" });
@@ -734,7 +735,7 @@ const notFound = ({ status, body }) => status === 404 || body.includes("Nothing 
    */
   const noScript = await browser.newContext({ javaScriptEnabled: false });
   await noScript.addCookies([
-    { name: cookieName, value: staff.slice(cookieName.length + 1), domain: "localhost", path: "/" },
+    { name: cookieName, value: staff.slice(cookieName.length + 1), ...cookieScope(BASE) },
   ]);
   const plain = await noScript.newPage();
   await plain.goto(`${BASE}/admin/blog-post`, { waitUntil: "load" });

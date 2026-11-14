@@ -1,5 +1,6 @@
 import { cacheLife, cacheTag } from "next/cache";
 
+import { TAGS } from "./tags";
 import {
   BASE,
   TIMEZONE,
@@ -13,6 +14,7 @@ import {
   usd,
 } from "./wakatime-format";
 import { wakatimeInit } from "./wakatime-fetch";
+import { foldPrivateProjects } from "./wakatime-shapes";
 
 /**
  * WakaTime coding activity for the dashboard.
@@ -346,11 +348,17 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
 
   const totalLines = ai.aiLines + ai.humanLines;
 
-  /** AI lines by project, as a share of every AI line written this week. */
-  const projects = [...projectAiLines.entries()]
-    .sort((a, b) => b[1] - a[1])
+  /*
+   * AI lines by project, as a share of every AI line written this week. Folded
+   * through the allowlist before ranking, so a client project's name never
+   * leaves this function and its lines still count, under "Other".
+   */
+  const projects = foldPrivateProjects(
+    [...projectAiLines.entries()].map(([name, value]) => ({ name, value })),
+  )
+    .sort((a, b) => b.value - a.value || a.name.localeCompare(b.name))
     .slice(0, 3)
-    .map(([name, lines]) => ({
+    .map(({ name, value: lines }) => ({
       name,
       percent: share(lines, ai.aiLines),
       time: `${count(lines)} of ${count(ai.aiLines)} AI lines this week`,
@@ -439,7 +447,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
  */
 export async function getWakatimeStats(apiKey: string): Promise<WakatimeStats | null> {
   "use cache";
-  cacheTag("wakatime");
+  cacheTag(TAGS.wakatime);
   cacheLife({ stale: 900, revalidate: 900, expire: 1800 });
 
   return fetchWakatimeStats(apiKey);

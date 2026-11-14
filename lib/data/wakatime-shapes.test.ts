@@ -4,8 +4,10 @@ import { describe, it } from "node:test";
 import {
   bulletAxis,
   clock,
+  foldPrivateProjects,
   hourHistogram,
   mergeDurationBlocks,
+  publicProjectName,
   rankSlots,
   summariseSessions,
   weeklyAiTrend,
@@ -287,6 +289,74 @@ describe("clock", () => {
   it("wraps rather than printing a twenty-fourth hour", () => {
     assert.equal(clock(86400), "00:00");
     assert.equal(clock(-60), "00:00");
+  });
+});
+
+describe("publicProjectName", () => {
+  it("keeps a listed repository, whatever case the editor reported", () => {
+    assert.equal(publicProjectName("ridwaanhall-com"), "ridwaanhall-com");
+    assert.equal(publicProjectName("RIDWAANHALL-COM"), "ridwaanhall-com");
+    assert.equal(publicProjectName("lumina"), "Lumina");
+    assert.equal(publicProjectName("Management-Mabar-vip-mlbb"), "management-mabar-VIP-MLBB");
+  });
+
+  it("calls anything unlisted Other, a missing name included", () => {
+    assert.equal(publicProjectName("acme-client-portal"), "Other");
+    assert.equal(publicProjectName("ridwaanhall-com-private"), "Other");
+    assert.equal(publicProjectName(""), "Other");
+    assert.equal(publicProjectName(null), "Other");
+    assert.equal(publicProjectName(undefined), "Other");
+  });
+});
+
+describe("foldPrivateProjects", () => {
+  it("sums every unlisted project into one Other row", () => {
+    const folded = foldPrivateProjects([
+      { name: "gempa", value: 100 },
+      { name: "acme-client-portal", value: 40 },
+      { name: "secret-thing", value: 25 },
+      { name: "live-chat", value: 10 },
+    ]);
+    assert.deepEqual(folded, [
+      { name: "gempa", value: 100 },
+      { name: "live-chat", value: 10 },
+      { name: "Other", value: 40 + 25 },
+    ]);
+    assert.ok(!folded.some((row) => row.name === "acme-client-portal" || row.name === "secret-thing"));
+  });
+
+  it("merges two spellings of one public repository", () => {
+    assert.deepEqual(
+      foldPrivateProjects([
+        { name: "Gempa", value: 30 },
+        { name: "gempa", value: 12 },
+      ]),
+      [{ name: "gempa", value: 30 + 12 }],
+    );
+  });
+
+  it("adds no Other row when everything is public", () => {
+    assert.deepEqual(foldPrivateProjects([{ name: "Lumina", value: 5 }]), [{ name: "Lumina", value: 5 }]);
+  });
+
+  /*
+   * Folding has to happen before the cut to three: three private projects
+   * at the top would otherwise take every slot, and "Other" would have to
+   * stand for them while sitting below a smaller public one.
+   */
+  it("lets Other outrank a public project once its parts are summed", () => {
+    const ranked = foldPrivateProjects([
+      { name: "gempa", value: 50 },
+      { name: "client-a", value: 30 },
+      { name: "client-b", value: 30 },
+    ]).sort((a, b) => b.value - a.value);
+    assert.deepEqual(ranked[0], { name: "Other", value: 60 });
+  });
+
+  it("answers nothing for nothing", () => {
+    assert.deepEqual(foldPrivateProjects([]), []);
+    assert.deepEqual(foldPrivateProjects(null), []);
+    assert.deepEqual(foldPrivateProjects(undefined), []);
   });
 });
 

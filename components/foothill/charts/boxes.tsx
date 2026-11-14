@@ -156,6 +156,39 @@ export function Split({ parts, height = 34 }: { parts: { value: number; fill: st
   );
 }
 
+/**
+ * Ranked rows, each one thin `Split` in place of a track: a name, a share set
+ * in mono, and the row cut into its parts. Every row is its own whole, so the
+ * rows compare as proportions rather than as amounts.
+ */
+export function SplitRows({
+  title,
+  rows,
+}: {
+  title: string;
+  rows: { name: string; share: string; tip: string; parts: { value: number; fill: string; tip: string }[] }[];
+}) {
+  if (!rows.length) return null;
+  return (
+    <div>
+      <p className="meta" style={{ marginBottom: 12 }}>
+        {title}
+      </p>
+      <div className="bars">
+        {rows.map((row) => (
+          <div key={row.name} className="bar sprow" title={row.tip}>
+            <div>
+              <span>{row.name}</span>
+              <span className="mono mute">{row.share}</span>
+            </div>
+            <Split height={10} parts={row.parts} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /** The average weekday as stacked boxes, one column a day, each part a kind of work. */
 export function WeekColumns({
   days,

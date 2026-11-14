@@ -28,6 +28,12 @@ export const TAGS = {
   legal: "legal",
   settings: "settings",
   patchNotes: "patchNotes",
+  /*
+   * Not a table: every WakaTime read, which is fetched rather than queried.
+   * Nothing in `MODEL_TAGS` expires it and no write here changes it; it is
+   * listed so the reads name one constant rather than four copies of a string.
+   */
+  wakatime: "wakatime",
 } as const;
 
 export type Tag = (typeof TAGS)[keyof typeof TAGS];

@@ -302,3 +302,86 @@ export function clock(secondsIntoDay: number): string {
   const minutes = Math.floor((total % 3600) / 60);
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
+
+/**
+ * The WakaTime projects whose names may appear on the public site.
+ *
+ * **An allowlist, because the token sees everything.** The dashboard reads with
+ * a personal OAuth token, and WakaTime files time under whatever the editor
+ * calls the folder -- so the year's breakdown carries client and employer work
+ * by name alongside the public repositories. A name is not ours to publish
+ * just because we typed in it.
+ *
+ * Matching the other way round, on a pattern a private name tends to have, is
+ * the version that leaks: nothing about a folder name says whose it is, and the
+ * first client repository called something ordinary walks straight through. A
+ * name has to be listed here to be shown, and everything else is summed into
+ * one row that says only that there was other work.
+ *
+ * Every entry is a public repository. Matched case-insensitively, because the
+ * editor reports the folder as it is spelled on that disk.
+ */
+export const PUBLIC_PROJECTS: readonly string[] = [
+  "ridwaanhall-com",
+  "gempa",
+  "wilayah-indonesia",
+  "api-pddikti",
+  "learn-fastapi",
+  "management-mabar-VIP-MLBB",
+  "bithealth-technical-test",
+  "mlbb-api-docs",
+  "instagram-following-followers",
+  "learn-publish-pypi",
+  "try-fastapi-cloud",
+  "Lumina",
+  "live-chat",
+  "follow-dragon-spacex",
+  "rone-arena-python",
+];
+
+/** The one row every unlisted project is summed into. */
+export const OTHER_PROJECT = "Other";
+
+const PUBLIC_BY_KEY = new Map(PUBLIC_PROJECTS.map((name) => [name.toLowerCase(), name]));
+
+/**
+ * The name a project may be shown under: its listed spelling when it is
+ * public, `OTHER_PROJECT` for anything else, a missing name included.
+ *
+ * The listed spelling rather than the reported one, so two disks spelling one
+ * repository differently are still one row.
+ */
+export function publicProjectName(name: string | null | undefined): string {
+  return PUBLIC_BY_KEY.get((name ?? "").trim().toLowerCase()) ?? OTHER_PROJECT;
+}
+
+/**
+ * Projects with every unlisted name folded into one `OTHER_PROJECT` row.
+ *
+ * Run *before* ranking and cutting to the top N, so "Other" competes on its
+ * real total and a private project can never be what fills a slot. Rows that
+ * land on the same public name are summed too. Listed rows keep the order they
+ * arrived in, with "Other" after them; callers rank.
+ */
+export function foldPrivateProjects(
+  rows: readonly { name?: string | null; value?: number | null }[] | null | undefined,
+): { name: string; value: number }[] {
+  const totals = new Map<string, number>();
+  for (const row of rows ?? []) {
+    const name = publicProjectName(row?.name);
+    if (name === OTHER_PROJECT) continue;
+    totals.set(name, (totals.get(name) ?? 0) + (row?.value ?? 0));
+  }
+
+  let other = 0;
+  let hasOther = false;
+  for (const row of rows ?? []) {
+    if (publicProjectName(row?.name) !== OTHER_PROJECT) continue;
+    other += row?.value ?? 0;
+    hasOther = true;
+  }
+
+  const folded = [...totals.entries()].map(([name, value]) => ({ name, value }));
+  if (hasOther) folded.push({ name: OTHER_PROJECT, value: other });
+  return folded;
+}

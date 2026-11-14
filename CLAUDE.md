@@ -369,6 +369,7 @@ traps; those files stay the source of truth, so when they move, fix the agent.
 
 | Skill | Use it when |
 |---|---|
+| `team-discussion` | **Every request.** Discuss with the agents it touches, decide, assign, review, report. See below. |
 | `verify-change` | Before calling any change done: maps the paths touched to the harnesses that prove them. |
 | `live-db-write` | Before any data edit or a harness that writes: snapshot, write, restore, prove. |
 | `schema-delta` | Any DDL: `0000_init.sql`, the throwaway delta, RLS, the regenerated mapping. |
@@ -379,6 +380,33 @@ traps; those files stay the source of truth, so when they move, fix the agent.
 The usual handoff: `tech-lead` plans, the owning engineer builds,
 `security-engineer` reviews anything touching auth or the schema, `qa-engineer`
 proves it with `verify-change`, `release-engineer` ships it.
+
+### Every request goes through the team
+
+**This is the owner's standing instruction, and it applies to every request in
+every session: a question, a fix, a feature, a review, a data edit.** The main
+session is the **engineering manager**. It does not decide or build alone; it
+runs the `team-discussion` skill:
+
+1. **Discuss.** Brief `tech-lead` and every agent whose area the request
+   touches (the tables above say whose that is), in parallel. Each answers from
+   its own area: accept, reject or change each piece, with the reason, the
+   files it would touch and the proof it would want.
+2. **Decide.** Merge the answers into one decision: what is accepted, what is
+   rejected and why. A disagreement between agents, or anything that is the
+   owner's call (stored copy, what becomes public, spend, destructive changes),
+   goes to the owner as a question, not settled by the manager.
+3. **Assign.** Each accepted piece goes to the agent that owns its files, one
+   writer per set of files. The manager does not implement work an agent owns.
+4. **Review and prove.** `tech-lead` reviews the diff against the traps,
+   `security-engineer` anything touching auth, data exposure or the schema, and
+   `qa-engineer` proves it with `verify-change`.
+5. **Report.** Tell the owner who was consulted, what each said, what was
+   decided, who built what and what proves it. `release-engineer` commits or
+   ships only when the owner asks.
+
+A small request is still discussed, just briefly. Skipping the team is a
+departure from this rule, so if it ever happens, say so in the report.
 
 **UI checks run only when UI code changes.** `verify-change` names the UI paths;
 a diff that touches none of them (docs, scripts, schema, server logic) skips

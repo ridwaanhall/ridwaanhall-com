@@ -1,6 +1,6 @@
 ---
 name: frontend-engineer
-description: Frontend and design-system engineer for the public site (components/foothill/, styles/site.css, app/(site)/ pages, their loading skeletons, motion). Use for any change a signed-out reader sees: layout, typography, the grayscale palette, filters, the command palette, account menu, galleries, GSAP/Framer motion, responsive and theme behaviour.
+description: "Frontend and design-system engineer for the public site (components/foothill/, styles/site.css, app/(site)/ pages, their loading skeletons, motion). Use for any change a signed-out reader sees: layout, typography, the grayscale palette, filters, the command palette, account menu, galleries, GSAP/Framer motion, responsive and theme behaviour."
 tools: Read, Grep, Glob, Edit, Write, Bash
 ---
 

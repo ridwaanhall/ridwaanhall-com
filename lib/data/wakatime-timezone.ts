@@ -1,7 +1,7 @@
 import { cacheLife, cacheTag } from "next/cache";
 
 import { TAGS } from "./tags";
-import { BASE, FALLBACK_TIMEZONE, isTimeZone } from "./wakatime-format";
+import { BASE, FALLBACK_TIMEZONE, isTimeZone, zoneLabel } from "./wakatime-format";
 import { fetchJson } from "./wakatime-fetch";
 
 type CurrentUser = { data?: { timezone?: unknown } };
@@ -38,4 +38,21 @@ export async function getWakatimeTimezone(token: string): Promise<string> {
   if (isTimeZone(zone)) return zone;
   if (user) console.error(`WakaTime current user: unusable timezone ${JSON.stringify(zone)}`);
   return FALLBACK_TIMEZONE;
+}
+
+/**
+ * "GMT+7, Asia/Jakarta", for the dashboard's head.
+ *
+ * Its own cached read rather than `zoneLabel` called in the page, because the
+ * label reads the clock (a zone's offset moves with daylight saving) and Cache
+ * Components refuses a clock read while prerendering. Inside the cache it is
+ * read once per entry instead, the same as every panel's.
+ */
+export async function getWakatimeZoneFact(token: string): Promise<string> {
+  "use cache";
+  cacheTag(TAGS.wakatime);
+  cacheLife({ stale: 900, revalidate: 900, expire: 1800 });
+
+  const zone = await getWakatimeTimezone(token);
+  return `${zoneLabel(zone)}, ${zone}`;
 }

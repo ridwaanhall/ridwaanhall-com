@@ -16,9 +16,9 @@ import { getAboutData } from "@/lib/data/about";
 import { getGitHubStats } from "@/lib/data/github";
 import { getWakatimeStats, type WakatimeStats } from "@/lib/data/wakatime";
 import { getWakatimeDay } from "@/lib/data/wakatime-day";
-import { formatTime, zoneLabel } from "@/lib/data/wakatime-format";
+import { formatTime } from "@/lib/data/wakatime-format";
 import { getWakatimeRhythm } from "@/lib/data/wakatime-rhythm";
-import { getWakatimeTimezone } from "@/lib/data/wakatime-timezone";
+import { getWakatimeZoneFact } from "@/lib/data/wakatime-timezone";
 import { getWakatimeYear, type WakatimeYear } from "@/lib/data/wakatime-year";
 import { dashboardSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
@@ -117,8 +117,7 @@ export default async function DashboardPage() {
 
 /** "GMT+7, Asia/Jakarta": the zone the WakaTime account is set to. */
 async function WakatimeZone() {
-  const zone = await getWakatimeTimezone(WAKATIME());
-  return <>{`${zoneLabel(zone)}, ${zone}`}</>;
+  return <>{await getWakatimeZoneFact(WAKATIME())}</>;
 }
 
 /** A panel's frame while its source answers. */

@@ -6,10 +6,12 @@ import {
   compactNumber,
   count,
   formatTime,
-  longDateJakarta,
+  FALLBACK_TIMEZONE,
+  longDateIn,
   share,
 } from "./wakatime-format";
 import { fetchJson, insightsUrl } from "./wakatime-fetch";
+import { getWakatimeTimezone } from "./wakatime-timezone";
 import { foldPrivateProjects } from "./wakatime-shapes";
 import { TAGS } from "./tags";
 import type { WakatimeEntry } from "./wakatime";
@@ -303,6 +305,7 @@ export function shapeWakatimeYear(
   stats: YearStats | null | undefined,
   series: YearDays | null | undefined,
   languageSplit: YearLanguages | null | undefined,
+  zone: string = FALLBACK_TIMEZONE,
 ): WakatimeYear | null {
   // The whole panel is about the year's totals. Without them there is nothing
   // to render around a heatmap, so this one failure takes the section with it.
@@ -328,12 +331,15 @@ export function shapeWakatimeYear(
   const splitByLanguage = aiLanguages(languageSplit);
 
   return {
-    range: `${longDateJakarta(data.start)} to ${longDateJakarta(data.end)}`,
+    range: `${longDateIn(data.start, zone)} to ${longDateIn(data.end, zone)}`,
     total: data.human_readable_total ?? formatTime(total),
     daily_average: data.human_readable_daily_average ?? "0 mins",
     best_day: data.best_day?.text ?? "0 mins",
-    best_day_date: longDateJakarta(
+    // A bare date, already on the account's calendar: read at UTC midnight
+    // and written back in UTC, so no zone can move it to a neighbouring day.
+    best_day_date: longDateIn(
       data.best_day?.date ? `${data.best_day.date}T00:00:00Z` : undefined,
+      "UTC",
     ),
     /*
      * WakaTime calls a day with no coding on it a holiday, and reports the two
@@ -378,13 +384,14 @@ async function fetchWakatimeYear(apiKey: string): Promise<WakatimeYear | null> {
    * answers a failure with `null` rather than throwing, which is what lets the
    * language split fail on its own without taking the year with it.
    */
+  const zone = await getWakatimeTimezone(apiKey);
   const [stats, series, languageSplit] = await Promise.all([
-    fetchJson<YearStats>(insightsUrl("stats"), apiKey, "year stats"),
-    fetchJson<YearDays>(insightsUrl("days"), apiKey, "year days"),
-    fetchJson<YearLanguages>(insightsUrl("languages"), apiKey, "year languages"),
+    fetchJson<YearStats>(insightsUrl("stats", zone), apiKey, "year stats"),
+    fetchJson<YearDays>(insightsUrl("days", zone), apiKey, "year days"),
+    fetchJson<YearLanguages>(insightsUrl("languages", zone), apiKey, "year languages"),
   ]);
 
-  return shapeWakatimeYear(stats, series, languageSplit);
+  return shapeWakatimeYear(stats, series, languageSplit, zone);
 }
 
 /**

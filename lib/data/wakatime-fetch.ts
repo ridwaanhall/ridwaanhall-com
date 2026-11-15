@@ -1,4 +1,4 @@
-import { BASE, TIMEZONE } from "./wakatime-format";
+import { BASE } from "./wakatime-format";
 
 /**
  * The two things every WakaTime call here does the same way.
@@ -52,17 +52,15 @@ export async function fetchJson<T>(url: string, token: string, label: string): P
 }
 
 /**
- * A `insights/<thing>/last_year` URL.
+ * A `insights/<thing>/last_year` URL, cut on `zone`.
  *
- * `timezone` is sent explicitly rather than left to the account's own setting.
- * The two agree today, so it changes nothing visible -- but the day boundary
- * these figures are cut on is a property of the site, and leaving it to a
- * profile field means somebody editing that field silently moves what a day
- * means here.
+ * `zone` is the account's own setting, from `getWakatimeTimezone`. It is still
+ * sent explicitly rather than left for WakaTime to assume, so every call a
+ * panel makes is cut on the one zone that panel read -- see that function.
  */
-export function insightsUrl(path: string): string {
+export function insightsUrl(path: string, zone: string): string {
   return (
     `${BASE}/users/current/insights/${path}/last_year?paywalled=true` +
-    `&timezone=${encodeURIComponent(TIMEZONE)}`
+    `&timezone=${encodeURIComponent(zone)}`
   );
 }

@@ -1,8 +1,9 @@
 import { cacheLife, cacheTag } from "next/cache";
 
 import { TAGS } from "./tags";
-import { BASE, TIMEZONE, formatTime, jakartaToday } from "./wakatime-format";
+import { BASE, daysAgo, formatTime, todayIn, zoneLabel } from "./wakatime-format";
 import { fetchJson } from "./wakatime-fetch";
+import { getWakatimeTimezone } from "./wakatime-timezone";
 import {
   clock,
   hourHistogram,
@@ -15,7 +16,7 @@ import {
 } from "./wakatime-shapes";
 
 /**
- * Today, laid out along the clock.
+ * One day -- today or yesterday -- laid out along the clock.
  *
  * Every other WakaTime panel on the dashboard answers "how much"; this one
  * answers "when". `durations` is the only endpoint that carries the shape of a
@@ -38,6 +39,8 @@ export type DayBlock = TimelineBlock & {
 export type WakatimeDay = {
   /** "August 26, 2026" -- the day the ribbon covers, on the clock it was kept on. */
   date: string;
+  /** "GMT+7" -- the account's zone, which the ribbon's hours are read in. */
+  zone_label: string;
   /** False on a day nothing has been logged to yet, which is not a failure. */
   has_activity: boolean;
 
@@ -50,6 +53,8 @@ export type WakatimeDay = {
   /** "09:14 - 23:48", or a dash on a day with nothing on it. */
   active_window: string;
   longest_break: string;
+  /** `total` as a number, so today can be put beside yesterday. */
+  total_seconds: number;
   /** "21:00", the hour holding the most of the day. */
   peak_hour: string;
   peak_hour_detail: string;
@@ -76,13 +81,23 @@ const RAMP_SLOTS = 5;
 /** The legend row every unranked language shares, and the name to keep out of the ramp. */
 const LEFTOVER_NAME = "Other";
 
-async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
+/**
+ * Which day the ribbon covers, counted back from today in the account's zone.
+ *
+ * Only these two: today is the day still being written, and yesterday is the
+ * last whole one -- the comparison a reader actually makes. Anything older is
+ * what the seven-day and year panels are for.
+ */
+export type DayOffset = 0 | 1;
+
+async function fetchWakatimeDay(apiKey: string, offset: DayOffset): Promise<WakatimeDay | null> {
   if (!apiKey) return null;
 
-  const date = jakartaToday();
+  const zone = await getWakatimeTimezone(apiKey);
+  const date = daysAgo(todayIn(zone), offset);
   const durations = await fetchJson<Durations>(
     `${BASE}/users/current/durations?date=${date}&slice_by=language&paywalled=true` +
-      `&timezone=${encodeURIComponent(TIMEZONE)}`,
+      `&timezone=${encodeURIComponent(zone)}`,
     apiKey,
     "durations",
   );
@@ -104,8 +119,8 @@ async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
    * Midnight comes from the response rather than from arithmetic on the date.
    * WakaTime states the boundary it cut the day on, and taking it from there is
    * what makes the ribbon agree with the hours inside it across a daylight
-   * saving change or a timezone edit -- neither of which Jakarta has, and
-   * neither of which this should depend on not having.
+   * saving change or a change of the account's timezone, both of which the
+   * zone can now have, since it is whatever wakatime.com is set to.
    */
   const startEpoch = durations.start
     ? Date.parse(durations.start) / 1000
@@ -166,6 +181,7 @@ async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
       day: "2-digit",
       year: "numeric",
     }).format(new Date(`${date}T00:00:00Z`)),
+    zone_label: zoneLabel(zone),
     has_activity: blocks.length > 0,
 
     blocks: blocks.map((block) => ({
@@ -188,28 +204,39 @@ async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
     peak_hour_detail:
       peakSeconds > 0
         ? `${formatTime(peakSeconds)} coded between ${String(peakHour).padStart(2, "0")}:00 and ${String((peakHour + 1) % 24).padStart(2, "0")}:00`
-        : "Nothing logged today yet",
+        : offset === 0
+          ? "Nothing logged today yet"
+          : "Nothing logged that day",
     total: formatTime(sessions.active_seconds),
+    total_seconds: sessions.active_seconds,
   };
 }
 
 /**
  * Cached for fifteen minutes, and gone after thirty.
  *
- * The same pairing the seven-day panel uses and for the same reason: this is
- * about today, so it is the one WakaTime figure on the page that can change
- * between one visitor and the next. The year's hourly refresh would leave a
- * ribbon that stopped growing at lunchtime.
+ * The same pairing the seven-day panel uses and for the same reason: today is
+ * the one WakaTime figure on the page that can change between one visitor and
+ * the next. The year's hourly refresh would leave a ribbon that stopped growing
+ * at lunchtime. Yesterday shares the pairing rather than taking a longer one:
+ * just after midnight it *was* today a minute ago, and an editor that was
+ * offline uploads its heartbeats late, so it can still move.
+ *
+ * `offset` is an argument, so it is part of the cache key: the two days are
+ * two entries, each refreshed on its own.
  *
  * The clock read that picks the date stays inside this boundary, which is what
  * Cache Components asks for -- a timestamp read while prerendering is refused
  * outright, and one read here is simply shared by every reader until the next
  * revalidation.
  */
-export async function getWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
+export async function getWakatimeDay(
+  apiKey: string,
+  offset: DayOffset = 0,
+): Promise<WakatimeDay | null> {
   "use cache";
   cacheTag(TAGS.wakatime);
   cacheLife({ stale: 900, revalidate: 900, expire: 1800 });
 
-  return fetchWakatimeDay(apiKey);
+  return fetchWakatimeDay(apiKey, offset);
 }

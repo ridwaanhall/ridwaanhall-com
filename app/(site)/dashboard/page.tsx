@@ -74,9 +74,12 @@ export default async function DashboardPage() {
               Measured from the landed page, so re-measure after a panel
               changes shape: `scripts/check-skeleton-shape.mjs` reports the
               first one that drifts. */}
-          {/* Phone is 46px taller than before the Today/Yesterday switch, which
-              wraps under the title at 375px as the editor panel's range does. */}
-          <Suspense fallback={<Waiting heights={[336]} phone={[464]} />}>
+          {/* The day panel grew with the Today/Yesterday switch (46px at 375px,
+              where it wraps under the title as the editor panel's range does)
+              and with the "vs yesterday" line under In the editor (24px at
+              both widths). Measured on sample data; re-run the skeleton check
+              against the real feed. */}
+          <Suspense fallback={<Waiting heights={[360]} phone={[488]} />}>
             <TodayPanel />
           </Suspense>
           <Suspense fallback={<Waiting heights={[368]} phone={[823]} />}>
@@ -169,10 +172,6 @@ async function TodayPanel() {
 }
 
 function weekRange(stats: WakatimeStats): EditorRange {
-  const change =
-    stats.today_change_type === "same"
-      ? "level with yesterday"
-      : `${Math.abs(Math.round(stats.today_change_percent))}% ${stats.today_change_type === "increase" ? "up on" : "down on"} yesterday`;
   return {
     sub: `${stats.start_date} to ${stats.end_date} · GMT+7 · via WakaTime`,
     summary: `${stats.this_week_coding} in the editor this week, and ${stats.daily_average} on an average day.${
@@ -182,7 +181,7 @@ function weekRange(stats: WakatimeStats): EditorRange {
       { label: "Since I started", value: stats.all_time_coding, sub: `since ${stats.all_time_start}` },
       { label: "On an average day", value: stats.daily_average, tip: "Total time divided by the days with any activity" },
       { label: "This week", value: stats.this_week_coding },
-      { label: "Today", value: stats.today_coding, sub: change },
+      { label: "Today", value: stats.today_coding, sub: stats.today_change },
     ],
     note: stats.best_day_coding ? `Best day: ${stats.best_day_coding} on ${stats.best_day_date}` : undefined,
     bars: [

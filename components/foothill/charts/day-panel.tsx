@@ -7,6 +7,7 @@ import { EmptyTrack, fillOf, Kpi, Legend, Timeline } from "@/components/foothill
 import { Seg } from "@/components/foothill/controls";
 import { Animate } from "@/components/foothill/motion";
 import type { WakatimeDay } from "@/lib/data/wakatime-day";
+import { changeFromYesterday } from "@/lib/data/wakatime-format";
 
 type Which = "today" | "yesterday";
 
@@ -30,8 +31,11 @@ export function DayPanel({ today, yesterday }: { today: WakatimeDay | null; yest
   // because a reader in another zone would otherwise read the ribbon's hours
   // as their own.
   const sub = `${day.date} · GMT+7 · via WakaTime`;
+  // Only today is put beside the other day: yesterday is complete and today
+  // still growing, so the comparison only reads one way round.
+  const change = isToday && yesterday ? changeFromYesterday(day.total_seconds, yesterday.total_seconds) : undefined;
   const summary = day.has_activity
-    ? `${day.total} in the editor ${isToday ? "today" : "yesterday"} across ${day.sessions} sessions, from ${day.active_window} GMT+7. The longest stretch was ${day.longest_session}.`
+    ? `${day.total} in the editor ${isToday ? "today" : "yesterday"} across ${day.sessions} sessions, from ${day.active_window} GMT+7. The longest stretch was ${day.longest_session}.${change ? (change.startsWith("none") ? " Nothing was logged yesterday." : ` That is ${change}.`) : ""}`
     : isToday
       ? "No sessions yet today."
       : "No sessions yesterday.";
@@ -69,7 +73,7 @@ export function DayPanel({ today, yesterday }: { today: WakatimeDay | null; yest
                   </div>
                 </div>
                 <div className="kpis k3" style={{ borderTop: "1px solid var(--fh-line)" }}>
-                  <Kpi label="In the editor" value={day.total} />
+                  <Kpi label="In the editor" value={day.total} sub={change} />
                   <Kpi label="Sessions" value={day.sessions} tip="A session ends after 15 minutes without a keystroke" />
                   <Kpi label="Longest" value={day.longest_session} tip="The longest run without a 15-minute break" />
                   <Kpi label="Window" value={day.active_window} tip="First and last activity of the day, GMT+7" />

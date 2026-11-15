@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import {
+  changeFromYesterday,
   compactNumber,
   count,
   daysAgo,
@@ -136,5 +137,27 @@ describe("daysAgo", () => {
   it("crosses a month and a year boundary", () => {
     assert.equal(daysAgo("2026-03-02", 3), "2026-02-27");
     assert.equal(daysAgo("2026-01-02", 6), "2025-12-27");
+  });
+});
+
+describe("changeFromYesterday", () => {
+  it("compares today with yesterday, rounded to a whole percent", () => {
+    assert.equal(changeFromYesterday(3 * 3600, 2 * 3600), "50% up on yesterday");
+    assert.equal(changeFromYesterday(3600, 4 * 3600), "75% down on yesterday");
+  });
+
+  it("calls a change that rounds to nothing level", () => {
+    assert.equal(changeFromYesterday(3600, 3600), "level with yesterday");
+    assert.equal(changeFromYesterday(3601, 3600), "level with yesterday");
+  });
+
+  it("says so in words when yesterday has nothing to divide by", () => {
+    assert.equal(changeFromYesterday(3600, 0), "none yesterday");
+    assert.equal(changeFromYesterday(0, 0), "none yesterday either");
+    assert.equal(changeFromYesterday(0, Number.NaN), "none yesterday either");
+  });
+
+  it("reads a day with nothing yet as all the way down", () => {
+    assert.equal(changeFromYesterday(0, 3600), "100% down on yesterday");
   });
 });

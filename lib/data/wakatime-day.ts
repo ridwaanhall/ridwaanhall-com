@@ -50,6 +50,8 @@ export type WakatimeDay = {
   /** "09:14 - 23:48", or a dash on a day with nothing on it. */
   active_window: string;
   longest_break: string;
+  /** `total` as a number, so today can be put beside yesterday. */
+  total_seconds: number;
   /** "21:00", the hour holding the most of the day. */
   peak_hour: string;
   peak_hour_detail: string;
@@ -201,6 +203,7 @@ async function fetchWakatimeDay(apiKey: string, offset: DayOffset): Promise<Waka
           ? "Nothing logged today yet"
           : "Nothing logged that day",
     total: formatTime(sessions.active_seconds),
+    total_seconds: sessions.active_seconds,
   };
 }
 

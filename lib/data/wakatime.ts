@@ -4,6 +4,7 @@ import { TAGS } from "./tags";
 import {
   BASE,
   TIMEZONE,
+  changeFromYesterday,
   compactNumber,
   count,
   daysAgo,
@@ -89,8 +90,8 @@ export type WakatimeStats = {
   daily_average: string;
   this_week_coding: string;
   today_coding: string;
-  today_change_percent: number;
-  today_change_type: "increase" | "decrease" | "same";
+  /** "12% up on yesterday" -- today so far against the whole of yesterday. */
+  today_change: string;
   best_day_coding: string;
   best_day_date: string;
   top_3_categories: WakatimeEntry[];
@@ -313,17 +314,12 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
       (day.grand_total?.total_seconds ?? 0) > (best?.grand_total?.total_seconds ?? 0) ? day : best,
     daily[0],
   );
-  const todaySeconds =
-    daily.find((day) => day.range?.date === today)?.grand_total?.total_seconds ?? 0;
+  const secondsOn = (date: string) =>
+    daily.find((day) => day.range?.date === date)?.grand_total?.total_seconds ?? 0;
+  const todaySeconds = secondsOn(today);
+  // Yesterday is already inside the seven-day window, so it costs no call.
+  const yesterdaySeconds = secondsOn(daysAgo(today, 1));
   const dailyAverage = summary.daily_average?.seconds_including_other_language ?? 0;
-
-  let changePercent = 0;
-  let changeType: WakatimeStats["today_change_type"] = "same";
-  if (dailyAverage > 0) {
-    const ratio = ((todaySeconds - dailyAverage) / dailyAverage) * 100;
-    changePercent = Math.abs(ratio);
-    changeType = ratio > 0 ? "increase" : ratio < 0 ? "decrease" : "same";
-  }
 
   const spend = heuristics?.ai_model_total_cost ?? 0;
   const models =
@@ -385,8 +381,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
     daily_average: formatTime(dailyAverage),
     this_week_coding: formatTime(grandTotal),
     today_coding: formatTime(todaySeconds),
-    today_change_percent: Math.round(changePercent * 10) / 10,
-    today_change_type: changeType,
+    today_change: changeFromYesterday(todaySeconds, yesterdaySeconds),
     best_day_coding: formatTime(bestDay?.grand_total?.total_seconds ?? 0),
     best_day_date: longDateJakarta(
       bestDay?.range?.date ? `${bestDay.range.date}T00:00:00Z` : undefined,

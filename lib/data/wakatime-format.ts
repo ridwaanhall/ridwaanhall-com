@@ -111,6 +111,27 @@ export function longDateJakarta(iso: string | undefined | null): string {
 }
 
 /**
+ * "12% up on yesterday", "level with yesterday", "none yesterday".
+ *
+ * Both dashboard panels that put today beside yesterday word it here, so the
+ * two cannot drift into saying it differently. The "Today" card used to compare
+ * against the week's *daily average* while its label said yesterday; this
+ * compares against yesterday, which is what the label always promised.
+ *
+ * A yesterday with nothing on it has no percentage to offer (anything over zero
+ * is an infinite rise), so it says so in words rather than printing "Infinity%".
+ * A change that rounds to 0% reads as level rather than "0% up".
+ */
+export function changeFromYesterday(todaySeconds: number, yesterdaySeconds: number): string {
+  const today = Number.isFinite(todaySeconds) && todaySeconds > 0 ? todaySeconds : 0;
+  const yesterday = Number.isFinite(yesterdaySeconds) && yesterdaySeconds > 0 ? yesterdaySeconds : 0;
+  if (yesterday === 0) return today > 0 ? "none yesterday" : "none yesterday either";
+  const percent = Math.round(((today - yesterday) / yesterday) * 100);
+  if (percent === 0) return "level with yesterday";
+  return `${Math.abs(percent)}% ${percent > 0 ? "up on" : "down on"} yesterday`;
+}
+
+/**
  * A share of a whole, to two decimals, safe at a zero total.
  *
  * Every breakdown on the dashboard computes this, and a `/ 0` reaching the page

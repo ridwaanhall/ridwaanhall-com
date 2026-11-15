@@ -30,12 +30,12 @@ export function DayPanel({ today, yesterday }: { today: WakatimeDay | null; yest
   // The day boundary every figure below is cut on. Said where the date is,
   // because a reader in another zone would otherwise read the ribbon's hours
   // as their own.
-  const sub = `${day.date} · GMT+7 · via WakaTime`;
+  const sub = `${day.date} · ${day.zone_label} · via WakaTime`;
   // Only today is put beside the other day: yesterday is complete and today
   // still growing, so the comparison only reads one way round.
   const change = isToday && yesterday ? changeFromYesterday(day.total_seconds, yesterday.total_seconds) : undefined;
   const summary = day.has_activity
-    ? `${day.total} in the editor ${isToday ? "today" : "yesterday"} across ${day.sessions} sessions, from ${day.active_window} GMT+7. The longest stretch was ${day.longest_session}.${change ? (change.startsWith("none") ? " Nothing was logged yesterday." : ` That is ${change}.`) : ""}`
+    ? `${day.total} in the editor ${isToday ? "today" : "yesterday"} across ${day.sessions} sessions, from ${day.active_window} ${day.zone_label}. The longest stretch was ${day.longest_session}.${change ? (change.startsWith("none") ? " Nothing was logged yesterday." : ` That is ${change}.`) : ""}`
     : isToday
       ? "No sessions yet today."
       : "No sessions yesterday.";
@@ -76,9 +76,9 @@ export function DayPanel({ today, yesterday }: { today: WakatimeDay | null; yest
                   <Kpi label="In the editor" value={day.total} sub={change} />
                   <Kpi label="Sessions" value={day.sessions} tip="A session ends after 15 minutes without a keystroke" />
                   <Kpi label="Longest" value={day.longest_session} tip="The longest run without a 15-minute break" />
-                  <Kpi label="Window" value={day.active_window} tip="First and last activity of the day, GMT+7" />
+                  <Kpi label="Window" value={day.active_window} tip={`First and last activity of the day, ${day.zone_label}`} />
                   <Kpi label="Longest break" value={day.longest_break} />
-                  <Kpi label="Busiest hour" value={day.peak_hour} tip={day.peak_hour !== "--" ? `${day.peak_hour_detail}, GMT+7` : undefined} />
+                  <Kpi label="Busiest hour" value={day.peak_hour} tip={day.peak_hour !== "--" ? `${day.peak_hour_detail}, ${day.zone_label}` : undefined} />
                 </div>
               </>
             ) : (

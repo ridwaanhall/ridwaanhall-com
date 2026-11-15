@@ -7,7 +7,10 @@ import {
   count,
   daysAgo,
   formatTime,
-  longDateJakarta,
+  isTimeZone,
+  longDateIn,
+  todayIn,
+  zoneLabel,
   share,
   shortTime,
   usd,
@@ -108,9 +111,9 @@ describe("share", () => {
   });
 });
 
-describe("longDateJakarta", () => {
+describe("longDateIn", () => {
   it("writes the date the coding hours were kept on", () => {
-    assert.equal(longDateJakarta("2026-08-20T00:00:00Z"), "August 20, 2026");
+    assert.equal(longDateIn("2026-08-20T00:00:00Z", "Asia/Jakarta"), "August 20, 2026");
   });
 
   /*
@@ -118,14 +121,14 @@ describe("longDateJakarta", () => {
    * these are the boundaries WakaTime itself cuts its days on.
    */
   it("rolls to the next day past 17:00 UTC, as Jakarta does", () => {
-    assert.equal(longDateJakarta("2026-08-20T16:59:59Z"), "August 20, 2026");
-    assert.equal(longDateJakarta("2026-08-20T17:00:00Z"), "August 21, 2026");
+    assert.equal(longDateIn("2026-08-20T16:59:59Z", "Asia/Jakarta"), "August 20, 2026");
+    assert.equal(longDateIn("2026-08-20T17:00:00Z", "Asia/Jakarta"), "August 21, 2026");
   });
 
   it("says N/A rather than 'Invalid Date' when the API omits one", () => {
-    assert.equal(longDateJakarta(undefined), "N/A");
-    assert.equal(longDateJakarta(null), "N/A");
-    assert.equal(longDateJakarta("not a date"), "N/A");
+    assert.equal(longDateIn(undefined, "Asia/Jakarta"), "N/A");
+    assert.equal(longDateIn(null, "Asia/Jakarta"), "N/A");
+    assert.equal(longDateIn("not a date", "Asia/Jakarta"), "N/A");
   });
 });
 
@@ -159,5 +162,35 @@ describe("changeFromYesterday", () => {
 
   it("reads a day with nothing yet as all the way down", () => {
     assert.equal(changeFromYesterday(0, 3600), "100% down on yesterday");
+  });
+});
+
+describe("the WakaTime account's zone", () => {
+  it("accepts a real IANA zone and refuses anything else", () => {
+    assert.equal(isTimeZone("Asia/Jakarta"), true);
+    assert.equal(isTimeZone("America/New_York"), true);
+    assert.equal(isTimeZone("UTC"), true);
+    assert.equal(isTimeZone("Mars/Olympus_Mons"), false);
+    assert.equal(isTimeZone(""), false);
+    assert.equal(isTimeZone(null), false);
+    assert.equal(isTimeZone(7), false);
+  });
+
+  it("puts today on the account's calendar, not the server's", () => {
+    const instant = new Date("2026-08-20T20:00:00Z");
+    assert.equal(todayIn("Asia/Jakarta", instant), "2026-08-21");
+    assert.equal(todayIn("America/New_York", instant), "2026-08-20");
+  });
+
+  it("names the zone by its offset, daylight saving included", () => {
+    assert.equal(zoneLabel("Asia/Jakarta"), "GMT+7");
+    assert.equal(zoneLabel("Asia/Kolkata"), "GMT+5:30");
+    assert.equal(zoneLabel("America/New_York", new Date("2026-07-01T12:00:00Z")), "GMT-4");
+    assert.equal(zoneLabel("America/New_York", new Date("2026-01-01T12:00:00Z")), "GMT-5");
+  });
+
+  it("dates an instant in whichever zone it is given", () => {
+    assert.equal(longDateIn("2026-08-20T20:00:00Z", "Asia/Jakarta"), "August 21, 2026");
+    assert.equal(longDateIn("2026-08-20T20:00:00Z", "America/New_York"), "August 20, 2026");
   });
 });

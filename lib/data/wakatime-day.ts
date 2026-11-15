@@ -1,8 +1,9 @@
 import { cacheLife, cacheTag } from "next/cache";
 
 import { TAGS } from "./tags";
-import { BASE, TIMEZONE, daysAgo, formatTime, jakartaToday } from "./wakatime-format";
+import { BASE, daysAgo, formatTime, todayIn, zoneLabel } from "./wakatime-format";
 import { fetchJson } from "./wakatime-fetch";
+import { getWakatimeTimezone } from "./wakatime-timezone";
 import {
   clock,
   hourHistogram,
@@ -38,6 +39,8 @@ export type DayBlock = TimelineBlock & {
 export type WakatimeDay = {
   /** "August 26, 2026" -- the day the ribbon covers, on the clock it was kept on. */
   date: string;
+  /** "GMT+7" -- the account's zone, which the ribbon's hours are read in. */
+  zone_label: string;
   /** False on a day nothing has been logged to yet, which is not a failure. */
   has_activity: boolean;
 
@@ -79,7 +82,7 @@ const RAMP_SLOTS = 5;
 const LEFTOVER_NAME = "Other";
 
 /**
- * Which day the ribbon covers, counted back from today in Asia/Jakarta.
+ * Which day the ribbon covers, counted back from today in the account's zone.
  *
  * Only these two: today is the day still being written, and yesterday is the
  * last whole one -- the comparison a reader actually makes. Anything older is
@@ -90,10 +93,11 @@ export type DayOffset = 0 | 1;
 async function fetchWakatimeDay(apiKey: string, offset: DayOffset): Promise<WakatimeDay | null> {
   if (!apiKey) return null;
 
-  const date = daysAgo(jakartaToday(), offset);
+  const zone = await getWakatimeTimezone(apiKey);
+  const date = daysAgo(todayIn(zone), offset);
   const durations = await fetchJson<Durations>(
     `${BASE}/users/current/durations?date=${date}&slice_by=language&paywalled=true` +
-      `&timezone=${encodeURIComponent(TIMEZONE)}`,
+      `&timezone=${encodeURIComponent(zone)}`,
     apiKey,
     "durations",
   );
@@ -115,8 +119,8 @@ async function fetchWakatimeDay(apiKey: string, offset: DayOffset): Promise<Waka
    * Midnight comes from the response rather than from arithmetic on the date.
    * WakaTime states the boundary it cut the day on, and taking it from there is
    * what makes the ribbon agree with the hours inside it across a daylight
-   * saving change or a timezone edit -- neither of which Jakarta has, and
-   * neither of which this should depend on not having.
+   * saving change or a change of the account's timezone, both of which the
+   * zone can now have, since it is whatever wakatime.com is set to.
    */
   const startEpoch = durations.start
     ? Date.parse(durations.start) / 1000
@@ -177,6 +181,7 @@ async function fetchWakatimeDay(apiKey: string, offset: DayOffset): Promise<Waka
       day: "2-digit",
       year: "numeric",
     }).format(new Date(`${date}T00:00:00Z`)),
+    zone_label: zoneLabel(zone),
     has_activity: blocks.length > 0,
 
     blocks: blocks.map((block) => ({

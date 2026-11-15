@@ -14,10 +14,49 @@
  */
 
 export const BASE = "https://wakatime.com/api/v1";
-export const TIMEZONE = "Asia/Jakarta";
 
-/** Today in Asia/Jakarta as `YYYY-MM-DD`, which is what the API's range expects. */
-export { jakartaToday } from "@/lib/utils/format";
+/**
+ * The zone the WakaTime panels fall back to when the account's own setting
+ * cannot be read -- the call failed, or it named a zone this runtime does not
+ * know. Everything else follows the timezone set on wakatime.com; see
+ * `getWakatimeTimezone`. This is only WakaTime's clock: the rest of the site
+ * (contact hours, the home page clock) keeps Asia/Jakarta on its own.
+ */
+export const FALLBACK_TIMEZONE = "Asia/Jakarta";
+
+/**
+ * Is this an IANA zone the runtime can format in?
+ *
+ * The value arrives from a profile field on another service, and handing an
+ * unknown zone to `Intl` throws a RangeError at render. Checked once where it
+ * is read, so nothing downstream has to.
+ */
+export function isTimeZone(zone: unknown): zone is string {
+  if (typeof zone !== "string" || zone === "") return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: zone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** Today in `zone` as `YYYY-MM-DD`, which is what the API's ranges expect. */
+export function todayIn(zone: string, now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: zone }).format(now);
+}
+
+/**
+ * "GMT+7", "GMT+5:30", "GMT" -- the zone as the offset a reader can do
+ * arithmetic with, rather than a city they may not place. Taken at `at`, so a
+ * zone with daylight saving reads its current offset.
+ */
+export function zoneLabel(zone: string, at: Date = new Date()): string {
+  const name = new Intl.DateTimeFormat("en-US", { timeZone: zone, timeZoneName: "shortOffset" })
+    .formatToParts(at)
+    .find((part) => part.type === "timeZoneName")?.value;
+  return name ?? zone;
+}
 
 export function daysAgo(isoDate: string, days: number): string {
   const date = new Date(`${isoDate}T00:00:00Z`);
@@ -97,13 +136,13 @@ export const usd = (value: number, decimals: number) =>
     maximumFractionDigits: decimals,
   }).format(value);
 
-/** "August 20, 2026", in Jakarta time -- the clock the coding hours were kept on. */
-export function longDateJakarta(iso: string | undefined | null): string {
+/** "August 20, 2026", in `zone` -- the clock the coding hours were kept on. */
+export function longDateIn(iso: string | undefined | null, zone: string): string {
   if (!iso) return "N/A";
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return "N/A";
   return new Intl.DateTimeFormat("en-US", {
-    timeZone: TIMEZONE,
+    timeZone: zone,
     month: "long",
     day: "2-digit",
     year: "numeric",

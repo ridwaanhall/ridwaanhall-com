@@ -16,8 +16,9 @@ import { getAboutData } from "@/lib/data/about";
 import { getGitHubStats } from "@/lib/data/github";
 import { getWakatimeStats, type WakatimeStats } from "@/lib/data/wakatime";
 import { getWakatimeDay } from "@/lib/data/wakatime-day";
-import { formatTime } from "@/lib/data/wakatime-format";
+import { formatTime, zoneLabel } from "@/lib/data/wakatime-format";
 import { getWakatimeRhythm } from "@/lib/data/wakatime-rhythm";
+import { getWakatimeTimezone } from "@/lib/data/wakatime-timezone";
 import { getWakatimeYear, type WakatimeYear } from "@/lib/data/wakatime-year";
 import { dashboardSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
@@ -63,9 +64,15 @@ export default async function DashboardPage() {
             // The panels' cache lifetimes in lib/data: fifteen minutes for
             // today and GitHub, an hour for the year and the rhythm.
             ["Refreshed", "Today every 15 minutes, the year hourly"],
-            // Every WakaTime read is cut on this clock (`TIMEZONE` in
-            // lib/data/wakatime-format.ts), so a day here is a day in Jakarta.
-            ["Time zone", "GMT+7, Asia/Jakarta"],
+            // Every WakaTime read is cut on the zone set on the WakaTime
+            // account (lib/data/wakatime-timezone.ts). Its own boundary, so
+            // the head never waits on WakaTime.
+            [
+              "Time zone",
+              <Suspense key="tz" fallback="As set on WakaTime">
+                <WakatimeZone />
+              </Suspense>,
+            ],
           ]}
         />
         <div className="wrap dash">
@@ -106,6 +113,12 @@ export default async function DashboardPage() {
       <PageMotion />
     </main>
   );
+}
+
+/** "GMT+7, Asia/Jakarta": the zone the WakaTime account is set to. */
+async function WakatimeZone() {
+  const zone = await getWakatimeTimezone(WAKATIME());
+  return <>{`${zoneLabel(zone)}, ${zone}`}</>;
 }
 
 /** A panel's frame while its source answers. */
@@ -173,7 +186,7 @@ async function TodayPanel() {
 
 function weekRange(stats: WakatimeStats): EditorRange {
   return {
-    sub: `${stats.start_date} to ${stats.end_date} · GMT+7 · via WakaTime`,
+    sub: `${stats.start_date} to ${stats.end_date} · ${stats.zone_label} · via WakaTime`,
     summary: `${stats.this_week_coding} in the editor this week, and ${stats.daily_average} on an average day.${
       stats.top_3_languages[0] ? ` ${stats.top_3_languages[0].name} leads at ${Math.round(stats.top_3_languages[0].percent)}%.` : ""
     }`,

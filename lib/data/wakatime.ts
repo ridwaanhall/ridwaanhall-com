@@ -88,6 +88,8 @@ export type WakatimeStats = {
   fetched_at: number;
   /** "GMT+7" -- the account's zone, which the week's days are cut on. */
   zone_label: string;
+  /** The account's zone the copy's "today" was cut in, so the client's freshness guard judges a change of day on the same clock. */
+  zone: string;
   start_date: string;
   end_date: string;
   all_time_start: string;
@@ -383,6 +385,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
   return {
     fetched_at: fetchedAt,
     zone_label: zoneLabel(zone),
+    zone,
     start_date: longDateIn(summary.start, zone),
     end_date: longDateIn(summary.end, zone),
     all_time_start: longDateIn(allTime.data?.range?.start, zone),

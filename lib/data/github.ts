@@ -20,6 +20,8 @@ export type ContributionDay = CalendarDay;
 export type ContributionWeek = CalendarWeek;
 
 export type GitHubStats = {
+  /** Epoch ms the cached copy was built; shared by every reader, so a client can tell how old its copy is (the CDN serves stale-while-revalidate). */
+  fetched_at: number;
   weeks: ContributionWeek[];
   months: { firstDay: string; name: string; totalWeeks: number }[];
   total_contributions: number;
@@ -74,6 +76,7 @@ type CalendarResponse = {
 async function fetchGitHubStats(username: string, token: string): Promise<GitHubStats | null> {
   if (!username || !token) return null;
 
+  const fetchedAt = Date.now();
   let payload: CalendarResponse;
   try {
     const response = await fetch("https://api.github.com/graphql", {
@@ -116,6 +119,7 @@ async function fetchGitHubStats(username: string, token: string): Promise<GitHub
   const average = days.length > 0 ? (total / days.length).toFixed(1) : "0";
 
   return {
+    fetched_at: fetchedAt,
     weeks,
     months: calendar.months,
     total_contributions: total,

@@ -5,6 +5,7 @@ import { Suspense } from "react";
 
 import { PostCard, ProjectCard } from "@/components/foothill/cards";
 import { LocalClock } from "@/components/foothill/controls";
+import { FreshGuard } from "@/components/foothill/fresh-guard";
 import { Icon } from "@/components/foothill/icons";
 import { MAIN } from "@/components/foothill/layout";
 import { NoImage } from "@/components/foothill/noimg";
@@ -113,14 +114,20 @@ async function LiveCaps({ username, fixed }: { username: string; fixed: Counted[
     getWakatimeStats(process.env.WAKATIME_ACCESS_TOKEN ?? ""),
     getGitHubStats(username, process.env.GITHUB_ACCESS_TOKEN ?? ""),
   ]);
+  // The oldest stamp, not the newest: one stale source is enough to make the row wrong.
+  const stamps = [stats?.fetched_at, github?.fetched_at].filter((n): n is number => typeof n === "number");
+  const oldest = stamps.length ? Math.min(...stamps) : null;
   return (
-    <Caps
-      figures={[
-        ...fixed,
-        { value: stats ? wholeHours(stats.all_time_coding) : null, label: "hours in the editor" },
-        { value: github ? github.total_contributions : null, label: "contributions this year" },
-      ]}
-    />
+    <>
+      <Caps
+        figures={[
+          ...fixed,
+          { value: stats ? wholeHours(stats.all_time_coding) : null, label: "hours in the editor" },
+          { value: github ? github.total_contributions : null, label: "contributions this year" },
+        ]}
+      />
+      {oldest !== null && <FreshGuard fetchedAt={oldest} timeZone={stats?.zone} />}
+    </>
   );
 }
 

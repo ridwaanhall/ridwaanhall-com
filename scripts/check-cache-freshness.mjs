@@ -48,6 +48,7 @@ if (existsSync(manifestPath)) {
   }
 }
 
+const GUARDED = ["/dashboard", "/"];
 const DEFAULT_ZONE = "Asia/Jakarta";
 let ZONE = DEFAULT_ZONE;
 const validZone = (z) => { try { new Intl.DateTimeFormat("en-CA", { timeZone: z }); return true; } catch { return false; } };
@@ -88,37 +89,43 @@ async function round() {
     else if (r.age > lim.initialRevalidateSeconds) warn(`${id} > revalidate ${lim.initialRevalidateSeconds}`);
   }
 
-  const dash = rows.filter((r) => r.path === "/dashboard");
-  const html = dash.find((r) => r.kind === "html");
-  if (html) {
+  const zoneOf = (body, label) => {
     // The guard's props carry the account's zone; quotes are escaped in an RSC string.
-    const z = html.body.match(/timeZone\\?"\s*:\s*\\?"([A-Za-z_+\-/0-9]+)/);
-    if (!z) { ZONE = DEFAULT_ZONE; console.log(`  ..    no timeZone in the payload; using ${ZONE} (default)`); }
-    else if (validZone(z[1])) { ZONE = z[1]; console.log(`  ..    zone from payload: ${ZONE}`); }
-    else { ZONE = DEFAULT_ZONE; console.log(`  ..    payload zone "${z[1]}" is not a valid IANA zone; using ${ZONE}`); }
-    const m =html.body.match(/Today, so far<\/h3><p[^>]*>([A-Za-z]+) (\d{1,2}), (\d{4})/);
-    const now = new Date();
-    if (!m) fail("dashboard: Today panel date not found");
-    else {
-      const shown = `${m[3]}-${String(MONTHS.indexOf(m[1]) + 1).padStart(2, "0")}-${m[2].padStart(2, "0")}`;
-      if (shown !== dayIn(now)) fail(`dashboard Today panel shows ${shown}, ${ZONE} is ${dayIn(now)}`);
-      else ok(`dashboard Today panel shows ${shown}, matching ${ZONE}`);
+    const z = body.match(/timeZone\\?"\s*:\s*\\?"([A-Za-z_+\-/0-9]+)/);
+    if (!z) { console.log(`  ..    ${label}: no timeZone in the payload; using ${DEFAULT_ZONE} (default)`); return DEFAULT_ZONE; }
+    if (validZone(z[1])) { console.log(`  ..    ${label}: zone from payload: ${z[1]}`); return z[1]; }
+    console.log(`  ..    ${label}: payload zone "${z[1]}" is not a valid IANA zone; using ${DEFAULT_ZONE}`);
+    return DEFAULT_ZONE;
+  };
+  for (const route of GUARDED) {
+    const mine = rows.filter((r) => r.path === route);
+    const html = mine.find((r) => r.kind === "html");
+    if (!html) continue;
+    ZONE = zoneOf(html.body, route);
+    if (route === "/dashboard") {
+      const m = html.body.match(/Today, so far<\/h3><p[^>]*>([A-Za-z]+) (\d{1,2}), (\d{4})/);
+      if (!m) fail("dashboard: Today panel date not found");
+      else {
+        const shown = `${m[3]}-${String(MONTHS.indexOf(m[1]) + 1).padStart(2, "0")}-${m[2].padStart(2, "0")}`;
+        if (shown !== dayIn(new Date())) fail(`dashboard Today panel shows ${shown}, ${ZONE} is ${dayIn(new Date())}`);
+        else ok(`dashboard Today panel shows ${shown}, matching ${ZONE}`);
+      }
     }
-  }
-  for (const r of dash) {
-    // In an RSC payload the quotes are JSON-escaped inside a string, in HTML they are plain.
-    const f = r.body.match(/fetched_?[aA]t(?:\\)?"\s*:\s*(\d{12,})/);
-    if (!f) {
-      if (r.kind !== "html") continue;
-      if (allowMissing) console.log("  ..    no fetched_at in the payload (not shipped yet)");
-      else fail("dashboard carries no fetched_at stamp");
-      continue;
+    for (const r of mine) {
+      // In an RSC payload the quotes are JSON-escaped inside a string, in HTML they are plain.
+      const f = r.body.match(/fetched_?[aA]t(?:\\)?"\s*:\s*(\d{12,})/);
+      if (!f) {
+        if (r.kind !== "html") continue;
+        if (allowMissing) console.log(`  ..    ${route}: no fetchedAt stamp in the payload (not shipped yet)`);
+        else fail(`${route} carries no fetchedAt stamp`);
+        continue;
+      }
+      const at = new Date(Number(f[1]));
+      const mins = (Date.now() - at.getTime()) / 60000;
+      if (mins > 30) fail(`${route} (${r.kind}) fetchedAt ${at.toISOString()} is ${mins.toFixed(0)} min old`);
+      else if (dayIn(at) !== dayIn(new Date())) fail(`${route} (${r.kind}) fetchedAt ${at.toISOString()} is a different ${ZONE} day`);
+      else ok(`${route} (${r.kind}) fetchedAt ${mins.toFixed(1)} min old`);
     }
-    const at = new Date(Number(f[1]));
-    const mins = (Date.now() - at.getTime()) / 60000;
-    if (mins > 30) fail(`dashboard (${r.kind}) fetched_at ${at.toISOString()} is ${mins.toFixed(0)} min old`);
-    else if (dayIn(at) !== dayIn(new Date())) fail(`dashboard (${r.kind}) fetched_at ${at.toISOString()} is a different ${ZONE} day`);
-    else ok(`dashboard (${r.kind}) fetched_at ${mins.toFixed(1)} min old`);
   }
 }
 

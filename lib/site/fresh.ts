@@ -13,18 +13,38 @@ export const FRESH_MAX_AGE_MS = 30 * 60_000;
 /** Wait before each refresh attempt; its length is the attempt limit. */
 export const FRESH_RETRY_DELAYS_MS = [0, 5_000, 15_000];
 
-/** The calendar date in Asia/Jakarta, the site's one timezone, for any instant. */
-function jakartaDay(at: number): string {
-  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(new Date(at));
+/** The site's own timezone, used when the account's is unknown or unusable. */
+export const FRESH_DEFAULT_ZONE = "Asia/Jakarta";
+
+/**
+ * The calendar date in `timeZone` for any instant. The formatter is built per
+ * call: the zone arrives as a prop from the wire, and an unknown name makes
+ * Intl throw a RangeError, which must not take the page down. Fall back to the
+ * default zone instead, as if none had been given.
+ */
+function zoneDay(at: number, timeZone: string): string {
+  let format: Intl.DateTimeFormat;
+  try {
+    format = new Intl.DateTimeFormat("en-CA", { timeZone });
+  } catch {
+    format = new Intl.DateTimeFormat("en-CA", { timeZone: FRESH_DEFAULT_ZONE });
+  }
+  return format.format(new Date(at));
 }
 
 /**
- * True when `fetchedAt` is older than `maxAgeMs`, or from a different Jakarta
- * day than `now`: "today" is the one panel that is wrong the minute the date
- * turns, however young the copy. A stamp in the future (clock skew) is fresh.
+ * True when `fetchedAt` is older than `maxAgeMs`, or from a different calendar
+ * day than `now` in `timeZone` (the account's zone): "today" is the one panel
+ * that is wrong the minute the date turns, however young the copy. A stamp in
+ * the future (clock skew) is fresh.
  */
-export function isStale(fetchedAt: number, now: number, maxAgeMs: number = FRESH_MAX_AGE_MS): boolean {
+export function isStale(
+  fetchedAt: number,
+  now: number,
+  timeZone: string = FRESH_DEFAULT_ZONE,
+  maxAgeMs: number = FRESH_MAX_AGE_MS,
+): boolean {
   if (fetchedAt > now) return false;
   if (now - fetchedAt > maxAgeMs) return true;
-  return jakartaDay(fetchedAt) !== jakartaDay(now);
+  return zoneDay(fetchedAt, timeZone) !== zoneDay(now, timeZone);
 }

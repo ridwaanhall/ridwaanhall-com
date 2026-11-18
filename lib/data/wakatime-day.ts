@@ -43,6 +43,8 @@ export type WakatimeDay = {
   date: string;
   /** "GMT+7" -- the account's zone, which the ribbon's hours are read in. */
   zone_label: string;
+  /** The account's zone the copy's "today" was cut in, so the client's freshness guard judges a change of day on the same clock. */
+  zone: string;
   /** False on a day nothing has been logged to yet, which is not a failure. */
   has_activity: boolean;
 
@@ -186,6 +188,7 @@ async function fetchWakatimeDay(apiKey: string, offset: DayOffset): Promise<Waka
       year: "numeric",
     }).format(new Date(`${date}T00:00:00Z`)),
     zone_label: zoneLabel(zone),
+    zone,
     has_activity: blocks.length > 0,
 
     blocks: blocks.map((block) => ({

@@ -48,7 +48,10 @@ if (existsSync(manifestPath)) {
   }
 }
 
-const jakartaDay = (d) => new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Jakarta" }).format(d);
+const DEFAULT_ZONE = "Asia/Jakarta";
+let ZONE = DEFAULT_ZONE;
+const validZone = (z) => { try { new Intl.DateTimeFormat("en-CA", { timeZone: z }); return true; } catch { return false; } };
+const dayIn = (d) => new Intl.DateTimeFormat("en-CA", { timeZone: ZONE }).format(d);
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
 let failures = 0;
@@ -88,13 +91,18 @@ async function round() {
   const dash = rows.filter((r) => r.path === "/dashboard");
   const html = dash.find((r) => r.kind === "html");
   if (html) {
-    const m = html.body.match(/Today, so far<\/h3><p[^>]*>([A-Za-z]+) (\d{1,2}), (\d{4})/);
+    // The guard's props carry the account's zone; quotes are escaped in an RSC string.
+    const z = html.body.match(/timeZone\\?"\s*:\s*\\?"([A-Za-z_+\-/0-9]+)/);
+    if (!z) { ZONE = DEFAULT_ZONE; console.log(`  ..    no timeZone in the payload; using ${ZONE} (default)`); }
+    else if (validZone(z[1])) { ZONE = z[1]; console.log(`  ..    zone from payload: ${ZONE}`); }
+    else { ZONE = DEFAULT_ZONE; console.log(`  ..    payload zone "${z[1]}" is not a valid IANA zone; using ${ZONE}`); }
+    const m =html.body.match(/Today, so far<\/h3><p[^>]*>([A-Za-z]+) (\d{1,2}), (\d{4})/);
     const now = new Date();
     if (!m) fail("dashboard: Today panel date not found");
     else {
       const shown = `${m[3]}-${String(MONTHS.indexOf(m[1]) + 1).padStart(2, "0")}-${m[2].padStart(2, "0")}`;
-      if (shown !== jakartaDay(now)) fail(`dashboard Today panel shows ${shown}, Jakarta is ${jakartaDay(now)}`);
-      else ok(`dashboard Today panel shows ${shown}, matching Jakarta`);
+      if (shown !== dayIn(now)) fail(`dashboard Today panel shows ${shown}, ${ZONE} is ${dayIn(now)}`);
+      else ok(`dashboard Today panel shows ${shown}, matching ${ZONE}`);
     }
   }
   for (const r of dash) {
@@ -109,7 +117,7 @@ async function round() {
     const at = new Date(Number(f[1]));
     const mins = (Date.now() - at.getTime()) / 60000;
     if (mins > 30) fail(`dashboard (${r.kind}) fetched_at ${at.toISOString()} is ${mins.toFixed(0)} min old`);
-    else if (jakartaDay(at) !== jakartaDay(new Date())) fail(`dashboard (${r.kind}) fetched_at ${at.toISOString()} is a different Jakarta day`);
+    else if (dayIn(at) !== dayIn(new Date())) fail(`dashboard (${r.kind}) fetched_at ${at.toISOString()} is a different ${ZONE} day`);
     else ok(`dashboard (${r.kind}) fetched_at ${mins.toFixed(1)} min old`);
   }
 }

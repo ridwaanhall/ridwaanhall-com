@@ -3,17 +3,19 @@ import { cacheLife, cacheTag } from "next/cache";
 import { TAGS } from "./tags";
 import {
   BASE,
-  TIMEZONE,
+  changeFromYesterday,
   compactNumber,
   count,
   daysAgo,
   formatTime,
-  jakartaToday,
-  longDateJakarta,
+  longDateIn,
   share,
+  todayIn,
   usd,
+  zoneLabel,
 } from "./wakatime-format";
 import { wakatimeInit } from "./wakatime-fetch";
+import { getWakatimeTimezone } from "./wakatime-timezone";
 import { foldPrivateProjects } from "./wakatime-shapes";
 
 /**
@@ -84,6 +86,8 @@ export type WakatimeAi = {
 export type WakatimeStats = {
   /** Epoch ms the cached copy was built; shared by every reader, so a client can tell how old its copy is (the CDN serves stale-while-revalidate). */
   fetched_at: number;
+  /** "GMT+7" -- the account's zone, which the week's days are cut on. */
+  zone_label: string;
   start_date: string;
   end_date: string;
   all_time_start: string;
@@ -91,8 +95,8 @@ export type WakatimeStats = {
   daily_average: string;
   this_week_coding: string;
   today_coding: string;
-  today_change_percent: number;
-  today_change_type: "increase" | "decrease" | "same";
+  /** "12% up on yesterday" -- today so far against the whole of yesterday. */
+  today_change: string;
   best_day_coding: string;
   best_day_date: string;
   top_3_categories: WakatimeEntry[];
@@ -182,10 +186,11 @@ async function fetchAiHeuristics(
   apiKey: string,
   start: string,
   end: string,
+  zone: string,
 ): Promise<NonNullable<Heuristics["data"]> | null> {
   const url =
     `${BASE}/users/current/ai/heuristics?start=${start}&end=${end}` +
-    `&timezone=${encodeURIComponent(TIMEZONE)}`;
+    `&timezone=${encodeURIComponent(zone)}`;
 
   try {
     const response = await fetch(url, wakatimeInit(apiKey));
@@ -210,7 +215,8 @@ async function fetchAiHeuristics(
 async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null> {
   if (!apiKey) return null;
 
-  const today = jakartaToday();
+  const zone = await getWakatimeTimezone(apiKey);
+  const today = todayIn(zone);
   const fetchedAt = Date.now();
   const start = daysAgo(today, 6); // seven days including today
 
@@ -219,20 +225,19 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
   let heuristics: NonNullable<Heuristics["data"]> | null;
   try {
     /*
-     * `timezone` is sent explicitly rather than left to the account's own
-     * setting. The two agree today, so this changes nothing visible -- but the
-     * day boundary these figures are cut on is a property of the site, and
-     * leaving it to a profile field means somebody editing that field silently
-     * moves what "today" means here.
+     * `timezone` is the account's own setting (`getWakatimeTimezone`), and is
+     * still sent explicitly: `today` above was computed in it, and the range
+     * WakaTime cuts has to be cut on the same clock or "today" and the last
+     * day of the response could be two different days.
      */
     const [summaryResponse, allTimeResponse, heuristicsData] = await Promise.all([
       fetch(
         `${BASE}/users/current/summaries?start=${start}&end=${today}` +
-          `&timezone=${encodeURIComponent(TIMEZONE)}`,
+          `&timezone=${encodeURIComponent(zone)}`,
         wakatimeInit(apiKey),
       ),
       fetch(`${BASE}/users/current/all_time_since_today`, wakatimeInit(apiKey)),
-      fetchAiHeuristics(apiKey, start, today),
+      fetchAiHeuristics(apiKey, start, today, zone),
     ]);
 
     if (!summaryResponse.ok || !allTimeResponse.ok) {
@@ -316,17 +321,12 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
       (day.grand_total?.total_seconds ?? 0) > (best?.grand_total?.total_seconds ?? 0) ? day : best,
     daily[0],
   );
-  const todaySeconds =
-    daily.find((day) => day.range?.date === today)?.grand_total?.total_seconds ?? 0;
+  const secondsOn = (date: string) =>
+    daily.find((day) => day.range?.date === date)?.grand_total?.total_seconds ?? 0;
+  const todaySeconds = secondsOn(today);
+  // Yesterday is already inside the seven-day window, so it costs no call.
+  const yesterdaySeconds = secondsOn(daysAgo(today, 1));
   const dailyAverage = summary.daily_average?.seconds_including_other_language ?? 0;
-
-  let changePercent = 0;
-  let changeType: WakatimeStats["today_change_type"] = "same";
-  if (dailyAverage > 0) {
-    const ratio = ((todaySeconds - dailyAverage) / dailyAverage) * 100;
-    changePercent = Math.abs(ratio);
-    changeType = ratio > 0 ? "increase" : ratio < 0 ? "decrease" : "same";
-  }
 
   const spend = heuristics?.ai_model_total_cost ?? 0;
   const models =
@@ -382,18 +382,20 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
 
   return {
     fetched_at: fetchedAt,
-    start_date: longDateJakarta(summary.start),
-    end_date: longDateJakarta(summary.end),
-    all_time_start: longDateJakarta(allTime.data?.range?.start),
+    zone_label: zoneLabel(zone),
+    start_date: longDateIn(summary.start, zone),
+    end_date: longDateIn(summary.end, zone),
+    all_time_start: longDateIn(allTime.data?.range?.start, zone),
     all_time_coding: allTime.data?.text ?? "0 mins",
     daily_average: formatTime(dailyAverage),
     this_week_coding: formatTime(grandTotal),
     today_coding: formatTime(todaySeconds),
-    today_change_percent: Math.round(changePercent * 10) / 10,
-    today_change_type: changeType,
+    today_change: changeFromYesterday(todaySeconds, yesterdaySeconds),
     best_day_coding: formatTime(bestDay?.grand_total?.total_seconds ?? 0),
-    best_day_date: longDateJakarta(
+    // A bare date already on the account's calendar, so written back in UTC.
+    best_day_date: longDateIn(
       bestDay?.range?.date ? `${bestDay.range.date}T00:00:00Z` : undefined,
+      "UTC",
     ),
     top_3_categories: topThree(categoryTotals),
     top_3_languages: topThree(languageTotals),

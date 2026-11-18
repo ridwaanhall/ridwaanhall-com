@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
-import { Bars, Compare, EmptyTrack, fillOf, Kpi, Legend, Spark, Split, SplitRows, tight, Timeline, WeekColumns } from "@/components/foothill/charts/boxes";
+import { Bars, Compare, EmptyTrack, fillOf, Kpi, Legend, Spark, Split, SplitRows, tight, WeekColumns } from "@/components/foothill/charts/boxes";
+import { DayPanel } from "@/components/foothill/charts/day-panel";
 import { EditorPanel, type EditorRange } from "@/components/foothill/charts/editor-panel";
 import { FeedDown } from "@/components/foothill/charts/feed-down";
 import { FreshGuard } from "@/components/foothill/fresh-guard";
@@ -18,6 +19,7 @@ import { getWakatimeStats, type WakatimeStats } from "@/lib/data/wakatime";
 import { getWakatimeDay } from "@/lib/data/wakatime-day";
 import { formatTime } from "@/lib/data/wakatime-format";
 import { getWakatimeRhythm } from "@/lib/data/wakatime-rhythm";
+import { getWakatimeZoneFact } from "@/lib/data/wakatime-timezone";
 import { getWakatimeYear, type WakatimeYear } from "@/lib/data/wakatime-year";
 import { dashboardSeo } from "@/lib/seo/data";
 import { buildMetadata } from "@/lib/seo/metadata";
@@ -63,6 +65,15 @@ export default async function DashboardPage() {
             // The panels' cache lifetimes in lib/data: fifteen minutes for
             // today and GitHub, an hour for the year and the rhythm.
             ["Refreshed", "Today every 15 minutes, the year hourly"],
+            // Every WakaTime read is cut on the zone set on the WakaTime
+            // account (lib/data/wakatime-timezone.ts). Its own boundary, so
+            // the head never waits on WakaTime.
+            [
+              "Time zone",
+              <Suspense key="tz" fallback="As set on WakaTime">
+                <WakatimeZone />
+              </Suspense>,
+            ],
           ]}
         />
         <div className="wrap dash">
@@ -71,7 +82,12 @@ export default async function DashboardPage() {
               Measured from the landed page, so re-measure after a panel
               changes shape: `scripts/check-skeleton-shape.mjs` reports the
               first one that drifts. */}
-          <Suspense fallback={<Waiting heights={[336]} phone={[418]} />}>
+          {/* The day panel grew with the Today/Yesterday switch (46px at 375px,
+              where it wraps under the title as the editor panel's range does)
+              and with the "vs yesterday" line under In the editor (24px at
+              both widths). Measured on sample data; re-run the skeleton check
+              against the real feed. */}
+          <Suspense fallback={<Waiting heights={[360]} phone={[488]} />}>
             <TodayPanel />
           </Suspense>
           <Suspense fallback={<Waiting heights={[368]} phone={[823]} />}>
@@ -98,6 +114,11 @@ export default async function DashboardPage() {
       <PageMotion />
     </main>
   );
+}
+
+/** "GMT+7, Asia/Jakarta": the zone the WakaTime account is set to. */
+async function WakatimeZone() {
+  return <>{await getWakatimeZoneFact(WAKATIME())}</>;
 }
 
 /** A panel's frame while its source answers. */
@@ -153,59 +174,26 @@ function Down({ title, source, every }: { title: string; source: string; every?:
   );
 }
 
+/**
+ * Today and yesterday, the two reads issued together. Each is cached on its
+ * own and may fail on its own; the panel shows whichever answered.
+ */
 async function TodayPanel() {
-  const day = await getWakatimeDay(WAKATIME());
-  if (!day) return <Down title="Today, so far" source="WakaTime" />;
-  const sub = `${day.date} · via WakaTime`;
-  if (!day.has_activity)
-    return (
-      <Panel title="Today, so far" sub={sub} summary="No sessions yet today.">
-        <FreshGuard fetchedAt={day.fetched_at} />
-        <div className="panel-b">
-          <EmptyTrack label="No sessions yet" />
-          <p className="meta" style={{ marginTop: 14 }}>
-            The day starts at the first save in the editor.
-          </p>
-        </div>
-        <div className="kpis k3" style={{ borderTop: "1px solid var(--fh-line)" }}>
-          {["In the editor", "Sessions", "Longest", "Window", "Longest break", "Busiest hour"].map((label) => (
-            <Kpi key={label} label={label} value={<span className="mute">{label === "Sessions" ? "0" : label === "In the editor" ? "0m" : "–"}</span>} />
-          ))}
-        </div>
-      </Panel>
-    );
+  const [today, yesterday] = await Promise.all([getWakatimeDay(WAKATIME(), 0), getWakatimeDay(WAKATIME(), 1)]);
+  if (!today && !yesterday) return <Down title="Today, so far" source="WakaTime" />;
+  // Whichever read answered carries the stamp; both are cached alike.
+  const fetchedAt = (today ?? yesterday)!.fetched_at;
   return (
-    <Panel
-      title="Today, so far"
-      sub={sub}
-      summary={`${day.total} in the editor today across ${day.sessions} sessions, from ${day.active_window}. The longest stretch was ${day.longest_session}.`}
-    >
-      <FreshGuard fetchedAt={day.fetched_at} />
-      <div className="panel-b">
-        <Timeline blocks={day.blocks} />
-        <div style={{ marginTop: 14 }}>
-          <Legend items={day.languages.map((language) => ({ fill: fillOf(language.slot), label: `${language.name} ${language.time}` }))} />
-        </div>
-      </div>
-      <div className="kpis k3" style={{ borderTop: "1px solid var(--fh-line)" }}>
-        <Kpi label="In the editor" value={day.total} />
-        <Kpi label="Sessions" value={day.sessions} tip="A session ends after 15 minutes without a keystroke" />
-        <Kpi label="Longest" value={day.longest_session} tip="The longest run without a 15-minute break" />
-        <Kpi label="Window" value={day.active_window} tip="First and last activity of the day, GMT+7" />
-        <Kpi label="Longest break" value={day.longest_break} />
-        <Kpi label="Busiest hour" value={day.peak_hour} tip={day.peak_hour_detail || undefined} />
-      </div>
-    </Panel>
+    <>
+      <FreshGuard fetchedAt={fetchedAt} />
+      <DayPanel today={today} yesterday={yesterday} />
+    </>
   );
 }
 
 function weekRange(stats: WakatimeStats): EditorRange {
-  const change =
-    stats.today_change_type === "same"
-      ? "level with yesterday"
-      : `${Math.abs(Math.round(stats.today_change_percent))}% ${stats.today_change_type === "increase" ? "up on" : "down on"} yesterday`;
   return {
-    sub: `${stats.start_date} to ${stats.end_date} · via WakaTime`,
+    sub: `${stats.start_date} to ${stats.end_date} · ${stats.zone_label} · via WakaTime`,
     summary: `${stats.this_week_coding} in the editor this week, and ${stats.daily_average} on an average day.${
       stats.top_3_languages[0] ? ` ${stats.top_3_languages[0].name} leads at ${Math.round(stats.top_3_languages[0].percent)}%.` : ""
     }`,
@@ -213,7 +201,7 @@ function weekRange(stats: WakatimeStats): EditorRange {
       { label: "Since I started", value: stats.all_time_coding, sub: `since ${stats.all_time_start}` },
       { label: "On an average day", value: stats.daily_average, tip: "Total time divided by the days with any activity" },
       { label: "This week", value: stats.this_week_coding },
-      { label: "Today", value: stats.today_coding, sub: change },
+      { label: "Today", value: stats.today_coding, sub: stats.today_change },
     ],
     note: stats.best_day_coding ? `Best day: ${stats.best_day_coding} on ${stats.best_day_date}` : undefined,
     bars: [

@@ -73,10 +73,27 @@ jobs:
 
       # The build needs the database URL: `generateStaticParams` reads the blog
       # and project slugs at build time, and the sitemap fans out further. The
-      # rest of the keys are absent on purpose -- a build that needs a Resend key
-      # or an OAuth secret to succeed would be a build that fails on a fork's
-      # pull request, and none of them is read at build time.
+      # rest of the keys are absent on purpose -- none of them is read at build
+      # time, and each one handed to a step is one more thing that step can leak.
+      #
+      # That URL is the production database, under a role that bypasses RLS, and
+      # `npm run build` executes whatever the branch says: its `next.config`, its
+      # build-time modules, and every install script `npm ci` just ran. So the
+      # step runs only for a push to `main` and for a pull request from a branch
+      # of this repository -- code somebody with write access already put here.
+      #
+      # This `if:` is not what keeps the secret from a fork. A `pull_request` run
+      # uses the workflow file from the pull request's own merge commit, so a
+      # fork can delete the condition. What protects it is GitHub's default of
+      # sending no secrets to a fork's pull request, and the repository's "send
+      # secrets to fork pull requests" setting must stay off. The condition only
+      # stops a fork's build failing for want of a secret it will never get,
+      # while everything above, which needs none, still runs for every pull
+      # request, and it states plainly which runs are meant to hold the URL.
+      # Moving STORAGE_POSTGRES_URL into a GitHub environment that only `main`
+      # may deploy to would be the stronger fence; that is the owner's decision.
       - name: Build
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         run: npm run build
         env:
           STORAGE_POSTGRES_URL: ${{ secrets.STORAGE_POSTGRES_URL }}
@@ -88,7 +105,9 @@ jobs:
 
       # These two read the build's CSS, so they follow it: no utility emitted
       # because prose named it, and no public class that is also a utility.
+      # Skipped exactly when the build is, since there is no CSS to read then.
       - name: CSS checks
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
         run: |
           node scripts/check-css-sources.mjs
           node scripts/check-class-collisions.mjs

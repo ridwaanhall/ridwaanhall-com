@@ -1,5 +1,7 @@
 import "server-only";
 
+import { turnstileMode } from "./turnstile-mode";
+
 /**
  * Cloudflare Turnstile verification.
  *
@@ -14,6 +16,10 @@ import "server-only";
 const VERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const TIMEOUT_MS = 10_000;
 
+// Once per server instance: the refusal itself repeats on every submission, and
+// a log line per spam attempt would bury the one that says what to fix.
+let warnedMissingSecret = false;
+
 /** Whether the form should render a widget at all. */
 export function turnstileEnabled(): boolean {
   return Boolean(process.env.CF_TURNSTILE_SECRET_KEY && process.env.NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY);
@@ -22,11 +28,21 @@ export function turnstileEnabled(): boolean {
 export async function verifyTurnstile(token: string | null, remoteIp?: string): Promise<boolean> {
   const secret = process.env.CF_TURNSTILE_SECRET_KEY;
 
-  // With no secret configured there is nothing to verify against, so the form
-  // works in a checkout that has no Cloudflare credentials. Note this is the
-  // one path that does not fail closed -- an unset secret in production means
-  // no spam check at all.
-  if (!secret) return true;
+  // With no secret there is nothing to verify against. Under `next dev` that
+  // passes, so a checkout without Cloudflare credentials can still send the
+  // form; on any built server it refuses, because an unset secret in production
+  // used to mean no spam check at all on an anonymous form that sends mail to
+  // an address the sender chooses. `lib/email/turnstile-mode.ts` says why the
+  // line is drawn on `NODE_ENV`.
+  const mode = turnstileMode(secret, process.env.NODE_ENV);
+  if (mode === "skip") return true;
+  if (mode === "refuse" || !secret) {
+    if (!warnedMissingSecret) {
+      warnedMissingSecret = true;
+      console.error("CF_TURNSTILE_SECRET_KEY is not set; refusing every Turnstile-gated submission.");
+    }
+    return false;
+  }
 
   if (!token) {
     console.warn("No Turnstile token provided");

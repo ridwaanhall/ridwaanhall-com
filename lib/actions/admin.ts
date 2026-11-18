@@ -6,12 +6,14 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import {
+  ANCESTOR_LIMIT,
   cascadeTargets,
   formFields,
   formFieldsFor,
   manyToManyFields,
   richTextFields,
   parseFormValues,
+  valuesForValidation,
   type AdminFormModel,
   type FormField,
   type FormValues,
@@ -334,7 +336,12 @@ export async function saveRecord(
     prepared = inlines.prepared;
   }
 
-  const problem = await model.validate?.(values, {
+  /*
+   * The rule reads the record's stored read-only facts as well as what was
+   * submitted -- `valuesForValidation` says why -- while `values`, which is
+   * what gets written, stays exactly what the form posted.
+   */
+  const problem = await model.validate?.(valuesForValidation(model, id, values, stored?.values ?? null), {
     id,
     actorId: actor.id,
     actorIsSuperuser: actor.isSuperuser,
@@ -346,6 +353,29 @@ export async function saveRecord(
         .where(eq(column, value))
         .limit(1);
       return row !== undefined;
+    },
+    /*
+     * One lookup per hop, through the query builder rather than a recursive
+     * CTE: a raw template renders a column by its bare name, which is the
+     * trap `lib/admin/sql.ts` exists for, and the chains here are one or two
+     * rows long. The seen-set and the limit are what bound it on data that
+     * already holds a cycle.
+     */
+    ancestors: async (table, idColumn, parentColumn, startId) => {
+      const chain: string[] = [];
+      let current: string | null = startId;
+      while (current !== null && isUuid(current) && chain.length < ANCESTOR_LIMIT) {
+        if (chain.includes(current)) break;
+        const [row]: { parent: unknown }[] = await db
+          .select({ parent: parentColumn })
+          .from(table)
+          .where(eq(idColumn, current))
+          .limit(1);
+        if (!row) break;
+        chain.push(current);
+        current = typeof row.parent === "string" ? row.parent : null;
+      }
+      return chain;
     },
   });
   if (problem) return { ok: false, error: problem };
@@ -553,12 +583,21 @@ async function deleteWithChildren(model: AdminFormModel, id: string): Promise<vo
   await db.transaction(async (tx) => {
     for (const target of targets) {
       if (target.selfReference) {
-        // `reply_to` and `parent_id` are unbounded, so the branch is walked
-        // rather than assumed to be one level deep.
+        /*
+         * `reply_to` and `parent_id` are unbounded, so the branch is walked
+         * rather than assumed to be one level deep.
+         *
+         * `union`, not `union all`: Postgres then discards a row the walk has
+         * already produced, so the recursion ends even if the data holds a
+         * cycle (A under B, B under A). With `union all` that pair was walked
+         * forever, holding a connection inside this transaction. The forms
+         * refuse a cycle on the way in; this is what stops one that got in
+         * some other way from hanging a delete.
+         */
         await tx.execute(sql`
           with recursive branch as (
             select ${target.pk} as id from ${target.table} where ${target.fk} = ${id}
-            union all
+            union
             select child.id
             from ${target.table} as child
             join branch on child.${sql.raw(`"${target.fk.name}"`)} = branch.id

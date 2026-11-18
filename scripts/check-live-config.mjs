@@ -58,7 +58,8 @@ try {
     widget,
     "NEXT_PUBLIC_CF_TURNSTILE_SITE_KEY (build time -- needs a rebuild, not a redeploy).\n" +
       "          Worse than a missing widget: with CF_TURNSTILE_SECRET_KEY also unset,\n" +
-      "          verifyTurnstile() returns true and the form has no spam check at all.",
+      "          production refuses every contact submission (verifyTurnstile fails closed\n" +
+      "          outside `next dev`); only `next dev` lets the form through without a challenge.",
   );
 
   /* --------------------------------------------------------- dashboard */

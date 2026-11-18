@@ -182,10 +182,10 @@ async function TodayPanel() {
   const [today, yesterday] = await Promise.all([getWakatimeDay(WAKATIME(), 0), getWakatimeDay(WAKATIME(), 1)]);
   if (!today && !yesterday) return <Down title="Today, so far" source="WakaTime" />;
   // Whichever read answered carries the stamp; both are cached alike.
-  const fetchedAt = (today ?? yesterday)!.fetched_at;
+  const latest = (today ?? yesterday)!;
   return (
     <>
-      <FreshGuard fetchedAt={fetchedAt} />
+      <FreshGuard fetchedAt={latest.fetched_at} timeZone={latest.zone} />
       <DayPanel today={today} yesterday={yesterday} />
     </>
   );

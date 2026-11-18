@@ -11,16 +11,18 @@ import { FRESH_RETRY_DELAYS_MS, isStale } from "@/lib/site/fresh";
  * triggered regeneration, so it retries on a short ladder and then gives up
  * without a word. Renders nothing.
  */
-export function FreshGuard({ fetchedAt }: { fetchedAt: number }) {
+export function FreshGuard({ fetchedAt, timeZone }: { fetchedAt: number; timeZone?: string }) {
   const router = useRouter();
   const stamp = useRef(fetchedAt);
+  const zone = useRef(timeZone);
   const attempts = useRef(0);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     stamp.current = fetchedAt;
-    if (!isStale(fetchedAt, Date.now())) attempts.current = 0;
-  }, [fetchedAt]);
+    zone.current = timeZone;
+    if (!isStale(fetchedAt, Date.now(), timeZone)) attempts.current = 0;
+  }, [fetchedAt, timeZone]);
 
   useEffect(() => {
     const clear = () => {
@@ -30,7 +32,7 @@ export function FreshGuard({ fetchedAt }: { fetchedAt: number }) {
 
     const check = () => {
       if (timer.current) return;
-      if (!isStale(stamp.current, Date.now())) {
+      if (!isStale(stamp.current, Date.now(), zone.current)) {
         attempts.current = 0;
         return;
       }
@@ -39,7 +41,7 @@ export function FreshGuard({ fetchedAt }: { fetchedAt: number }) {
       timer.current = setTimeout(() => {
         timer.current = null;
         // The refreshed props may have landed fresh in the meantime.
-        if (!isStale(stamp.current, Date.now())) {
+        if (!isStale(stamp.current, Date.now(), zone.current)) {
           attempts.current = 0;
           return;
         }

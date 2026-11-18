@@ -3,6 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { TAGS } from "./tags";
 import { count, formatTime, share, shortTime } from "./wakatime-format";
 import { fetchJson, insightsUrl } from "./wakatime-fetch";
+import { getWakatimeTimezone } from "./wakatime-timezone";
 import { bulletAxis, rankSlots, weeklyAiTrend, type AiDay } from "./wakatime-shapes";
 
 /**
@@ -134,10 +135,11 @@ const SHORT_DAY: Record<string, string> = {
 async function fetchWakatimeRhythm(apiKey: string): Promise<WakatimeRhythm | null> {
   if (!apiKey) return null;
 
+  const zone = await getWakatimeTimezone(apiKey);
   const [weekdays, aiDays, average] = await Promise.all([
-    fetchJson<Weekdays>(insightsUrl("weekdays"), apiKey, "weekdays"),
-    fetchJson<AiDays>(insightsUrl("ai_days"), apiKey, "ai days"),
-    fetchJson<DailyAverage>(insightsUrl("daily_average"), apiKey, "daily average"),
+    fetchJson<Weekdays>(insightsUrl("weekdays", zone), apiKey, "weekdays"),
+    fetchJson<AiDays>(insightsUrl("ai_days", zone), apiKey, "ai days"),
+    fetchJson<DailyAverage>(insightsUrl("daily_average", zone), apiKey, "daily average"),
   ]);
 
   /*

@@ -70,6 +70,14 @@ twin). Framework questions are answered by
   elements, never `getElementById` something a sibling page carries.
 - `usePathname` in the shell sits inside `<Suspense>`.
 - A dynamic route cannot set a 404 status under `cacheComponents`; assert body.
+- `/openhire` is a 404 by design while "open to work" and "hiring" are both
+  unchecked in the profile settings (`notFound()` in its `page.tsx`). Do not
+  "fix" it; it renders when either flag is on.
+- `/dashboard`'s Today panel carries `<FreshGuard fetchedAt=…>`: the CDN can
+  hand a first visitor after idle a stale copy, and the guard refreshes when
+  the stamp is past 30 minutes or from another Jakarta day. Keep the stamp
+  inside the cached read (an old copy must carry an old stamp) and the
+  predicate in `lib/site/fresh.ts`, not in the client file.
 
 ## Proof before handing back
 

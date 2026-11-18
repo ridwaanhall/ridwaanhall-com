@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { Bars, Compare, EmptyTrack, fillOf, Kpi, Legend, Spark, Split, SplitRows, tight, Timeline, WeekColumns } from "@/components/foothill/charts/boxes";
 import { EditorPanel, type EditorRange } from "@/components/foothill/charts/editor-panel";
 import { FeedDown } from "@/components/foothill/charts/feed-down";
+import { FreshGuard } from "@/components/foothill/fresh-guard";
 import { Heatmap } from "@/components/foothill/charts/heatmap";
 import { Brand } from "@/components/foothill/icons";
 import { MAIN } from "@/components/foothill/layout";
@@ -159,6 +160,7 @@ async function TodayPanel() {
   if (!day.has_activity)
     return (
       <Panel title="Today, so far" sub={sub} summary="No sessions yet today.">
+        <FreshGuard fetchedAt={day.fetched_at} />
         <div className="panel-b">
           <EmptyTrack label="No sessions yet" />
           <p className="meta" style={{ marginTop: 14 }}>
@@ -178,6 +180,7 @@ async function TodayPanel() {
       sub={sub}
       summary={`${day.total} in the editor today across ${day.sessions} sessions, from ${day.active_window}. The longest stretch was ${day.longest_session}.`}
     >
+      <FreshGuard fetchedAt={day.fetched_at} />
       <div className="panel-b">
         <Timeline blocks={day.blocks} />
         <div style={{ marginTop: 14 }}>

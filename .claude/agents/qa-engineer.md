@@ -53,6 +53,18 @@ user to sign in. Check per page: renders, console clean (no hydration
 warnings), no broken links or images, light and dark, 375px and desktop, focus
 visible and keyboard reachable, one `<main>`, one visible theme toggle.
 
+`/openhire` answering 404 is expected, not a bug, while both "open to work" and
+"hiring" are unchecked in the profile settings: `app/(site)/openhire/page.tsx`
+calls `notFound()` when `is_open_to_work` and `is_hiring` are both false. Report
+it as that state (as `check-cache-freshness.mjs` does with its WARN), never as a
+broken route; it is a failure only when one of the two flags is on.
+
+The dashboard's freshness is proved by `check-cache-freshness.mjs`: Vercel's CDN
+serves a prerendered page stale-while-revalidate, so a first visit after idle
+can carry a days-old copy, and `FreshGuard` refreshes it from the `fetched_at`
+stamp. Run it with `--allow-missing-stamp` only against a deploy that predates
+the stamp.
+
 ## Reporting
 
 Pass/fail per page and section, each with evidence (console excerpt, network

@@ -36,6 +36,8 @@ export type DayBlock = TimelineBlock & {
 };
 
 export type WakatimeDay = {
+  /** Epoch ms the cached copy was built; shared by every reader, so a client can tell how old its copy is (the CDN serves stale-while-revalidate). */
+  fetched_at: number;
   /** "August 26, 2026" -- the day the ribbon covers, on the clock it was kept on. */
   date: string;
   /** False on a day nothing has been logged to yet, which is not a failure. */
@@ -80,6 +82,7 @@ async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
   if (!apiKey) return null;
 
   const date = jakartaToday();
+  const fetchedAt = Date.now();
   const durations = await fetchJson<Durations>(
     `${BASE}/users/current/durations?date=${date}&slice_by=language&paywalled=true` +
       `&timezone=${encodeURIComponent(TIMEZONE)}`,
@@ -160,6 +163,7 @@ async function fetchWakatimeDay(apiKey: string): Promise<WakatimeDay | null> {
     .map(({ name, slot, time }) => ({ name, slot, time }));
 
   return {
+    fetched_at: fetchedAt,
     date: new Intl.DateTimeFormat("en-US", {
       timeZone: "UTC",
       month: "long",

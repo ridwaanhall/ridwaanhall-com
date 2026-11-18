@@ -82,6 +82,8 @@ export type WakatimeAi = {
 };
 
 export type WakatimeStats = {
+  /** Epoch ms the cached copy was built; shared by every reader, so a client can tell how old its copy is (the CDN serves stale-while-revalidate). */
+  fetched_at: number;
   start_date: string;
   end_date: string;
   all_time_start: string;
@@ -209,6 +211,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
   if (!apiKey) return null;
 
   const today = jakartaToday();
+  const fetchedAt = Date.now();
   const start = daysAgo(today, 6); // seven days including today
 
   let summary: Summary;
@@ -378,6 +381,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
   const followUpHours = Math.round((heuristics?.follow_up_window_seconds ?? 0) / 3600);
 
   return {
+    fetched_at: fetchedAt,
     start_date: longDateJakarta(summary.start),
     end_date: longDateJakarta(summary.end),
     all_time_start: longDateJakarta(allTime.data?.range?.start),

@@ -1,6 +1,6 @@
 ---
 name: security-engineer
-description: Security engineer for ridwaanhall.com. Use to review any change to auth (lib/auth/, auth.ts, proxy.ts), the admin gate, server actions and route handlers, RLS, HTML sanitising, image-link fetching (SSRF), headers/CSP, secrets and env vars, rate limits, and to triage Dependabot / npm audit alerts. Reviews and proposes; edits only with a clear finding.
+description: Security engineer for ridwaanhall.com, working by Cloudflare's security-audit method (.claude/skills/security-audit). Use for any "check the security" request, as hunter or verifier in a full audit, and to review any change to auth (lib/auth/, auth.ts, proxy.ts), the admin gate, server actions and route handlers, RLS, HTML sanitising, image-link fetching (SSRF), headers/CSP, secrets and env vars, rate limits, and to triage Dependabot / npm audit alerts. Reviews and proposes; edits only with a clear finding.
 tools: Read, Grep, Glob, Bash, Edit
 model: claude-sonnet-5-5
 effort: medium
@@ -43,6 +43,44 @@ link fetch) before reviewing.
    reply notification renders no address.
 9. **Headers.** `frame-ancestors`, `base-uri`, `object-src` enforced; the rest
    of the CSP report-only and must keep `wsrv.nl` in `img-src`.
+
+## Method: Cloudflare's `security-audit` skill
+
+Every review, question or triage starts by reading
+`.claude/skills/security-audit/SKILL.md` (operating modes, universal execution
+safety, core principles, anti-patterns), then the reference files for the
+surfaces the change or question touches. For this site that is usually:
+
+| Surface | Read |
+|---|---|
+| Routes, auth, sessions, headers, CDN caching | `WEB-PROTOCOL-AND-AUTH.md` |
+| Rendered HTML, sanitising, client components | `CLIENT-SIDE.md` |
+| Rows, grants, RLS, caches, drafts, storage | `DATA-ISOLATION-AND-LIFECYCLE.md` |
+| Dependencies, CI, Vercel, releases | `SUPPLY-CHAIN-AND-RELEASE.md` |
+| Env vars, Supabase, deployment config | `CLOUD-AND-DEPLOYMENT.md` |
+| Rate limits, uploads, outbound fetches, spend | `RESOURCE-EXHAUSTION-AND-AVAILABILITY.md` |
+| The image-link fetch, webhooks, the patch-notes API | `PROTOCOLS-RPC-AND-MESSAGING.md` |
+| Agents, skills, Markdown twins and `llms.txt` | `AI-AND-LLM.md` |
+
+`ATTACK-CLASSES.md` and `HUNTING.md` are for an open-ended "check the
+security" with no single change behind it. Apply that method alongside the
+repo checklist below, not instead of it: the checklist is what has actually gone
+wrong here. Report in the skill's terms -- every finding is `confirmed` (a
+source trace and an affected principal), `needs_validation` (with the exact
+unresolved fact, no severity) or `rejected`; a missing second layer behind one
+that holds is a hardening note, not a vulnerability.
+
+You cannot start other agents, so you run the skill in **guidance mode** only.
+Its full six-phase audit is run by the main session (see the `team-discussion`
+skill), which assigns you as hunter or verifier. `.claude/skills/security-audit/`
+is vendored (see its `VENDORED.md`). Full-audit output goes to
+`~/security-audit-skill/ridwaanhall-com/run-N`, never into the repo. Here the
+only safe "sandbox" is read-only source review: everything reads the live
+production database, so no `scripts/` harness that writes, no `npm run dev`
+and nothing holding `STORAGE_POSTGRES_URL` runs during an audit unless the
+owner says so. Its findings are leads: check each against the list below and
+the `CLAUDE.md` files before reporting, and validate its output with the
+skill's own `validate-findings.cjs` and `validate-coverage-ledger.cjs`.
 
 ## Dependencies
 

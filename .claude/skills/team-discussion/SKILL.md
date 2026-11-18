@@ -57,6 +57,39 @@ older version: no Opus 5, no Sonnet 5.
   findings with the exact fix expected. Do not do the fix yourself, and do not
   restart the agent from nothing.
 
+## Security requests: Cloudflare's `security-audit` skill
+
+Any request to check, review, audit or pen-test security goes through
+`.claude/skills/security-audit/` (vendored from Cloudflare; `VENDORED.md`).
+Load it with the Skill tool before briefing anyone, and pick its mode the way
+its `SKILL.md` says:
+
+- **Guidance mode** -- a security question, one change, one alert, one area.
+  Run the usual discussion below with `security-engineer` (who reads the skill's
+  `SKILL.md` and the reference files for the surface) plus the owner of that
+  area. Findings come back as `confirmed` / `needs_validation` / `rejected`.
+- **Full audit mode** -- "check the security" of the site as a whole, an audit,
+  a pen test, or a request for a report. The main session runs the skill's six
+  phases itself, because agents here cannot start agents. Recon and the
+  coverage ledger are the main session's; the hunters are `security-engineer`
+  plus the owner of each ledger unit (`admin-engineer` for `/admin` and server
+  actions, `data-engineer` for RLS, grants and storage, `frontend-engineer` for
+  rendered HTML and client components, `perf-seo-engineer` for twins, caching
+  and `llms.txt`, `release-engineer` for CI and Vercel); each candidate gets a
+  fresh verifier that did not find it, as the skill requires; `tech-lead`
+  reviews the final records. Escalate the verifiers and the final review to
+  Opus (step 0: security-sensitive).
+
+This repo's limits override anything in the skill's execution guidance:
+everything reads the **live production database**, so an audit is read-only
+source review. No `scripts/` harness that writes, no `npm run dev`, no request
+to the live site beyond a plain read-only GET, nothing holding
+`STORAGE_POSTGRES_URL`, unless the owner says so for that run. Output goes to
+`~/security-audit-skill/ridwaanhall-com/run-N`, never into the repo; validate
+it with the skill's `validate-coverage-ledger.cjs` and `validate-findings.cjs`.
+The report to the owner names each `confirmed` finding, its fix and its owner;
+fixes then go through the normal assign/review/prove steps below.
+
 ## 1. Discuss (parallel)
 
 Pick the agents from the ownership tables in the root `CLAUDE.md` and in

@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // A vendored third-party skill, kept byte-for-byte with its upstream so it
+    // can be updated by copying; its CommonJS validators are not this app's code.
+    ".claude/skills/security-audit/**",
   ]),
 ]);
 

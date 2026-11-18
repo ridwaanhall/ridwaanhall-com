@@ -376,6 +376,7 @@ traps; those files stay the source of truth, so when they move, fix the agent.
 | `add-admin-screen` | A new admin screen or field, through the descriptor system and grants. |
 | `qa-pass` | A full sweep of every public route and admin screen, ending in a report. |
 | `ship-change` | Committing and offering a PR in the house format. |
+| `security-audit` | Any security check, review or audit: `security-engineer` works by it, and a full audit is run by the main session per `team-discussion`. Vendored from Cloudflare; read-only here. |
 
 The usual handoff: `tech-lead` plans, the owning engineer builds,
 `security-engineer` reviews anything touching auth or the schema, `qa-engineer`

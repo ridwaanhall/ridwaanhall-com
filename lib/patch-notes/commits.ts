@@ -92,12 +92,31 @@ export function parseCommit(message: string, sha = ""): Entry | null {
 
 export type Version = [number, number, number];
 
+/** The admin form's bound on each component of a release version. */
+export const MAX_VERSION_PART = 9999;
+
+/**
+ * A row whose component is out of bounds is treated as not semver, so
+ * `latestVersion` skips it. Ignoring rather than throwing is deliberate: one bad
+ * row (a typo in the admin, a hand edit) must not halt CI recording every later
+ * release, and the newest well-formed version is still the right base.
+ */
 export function parseVersion(text: string): Version | null {
   const match = /^v?(\d+)\.(\d+)\.(\d+)$/.exec(text.trim());
-  return match ? [Number(match[1]), Number(match[2]), Number(match[3])] : null;
+  if (!match) return null;
+  const parts = [Number(match[1]), Number(match[2]), Number(match[3])];
+  return parts.every((n) => n <= MAX_VERSION_PART) ? (parts as Version) : null;
 }
 
-export const formatVersion = ([major, minor, patch]: Version) => `${major}.${minor}.${patch}`;
+/** Throws rather than stringify something like `1e+21`, which is not semver. */
+export function formatVersion(version: Version): string {
+  for (const n of version) {
+    if (!Number.isSafeInteger(n) || n < 0 || n > MAX_VERSION_PART) {
+      throw new Error(`Refusing to format an invalid release version: [${version.join(", ")}]`);
+    }
+  }
+  return version.join(".");
+}
 
 /** Numeric, not lexical: "4.10.0" is newer than "4.9.0". */
 export function compareVersions(a: Version, b: Version): number {

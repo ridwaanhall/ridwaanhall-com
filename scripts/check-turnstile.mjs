@@ -26,9 +26,9 @@ const { turnstileEnabled, verifyTurnstile } = await import("../lib/email/turnsti
 const { check, finish } = reporter();
 
 if (!turnstileEnabled()) {
-  // Without a secret the verifier passes by design, which is the
-  // `USE_CF_TURNSTILE` gate, so there is nothing here to assert.
-  console.log("Turnstile is not configured — skipping (the verifier passes by design).");
+  // Without a secret the verifier passes only under `next dev`; production
+  // refuses (fails closed), so there is nothing to assert against Cloudflare here.
+  console.log("Turnstile is not configured — skipping (an unset secret passes under `next dev` only; production refuses).");
   process.exit(0);
 }
 

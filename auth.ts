@@ -3,6 +3,7 @@ import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 
 import { accountAdapter, touchLogin } from "@/lib/auth/adapter";
+import { acceptsProviderEmail } from "@/lib/auth/provider-email";
 import { isUuid } from "@/lib/utils/uuid";
 
 /**
@@ -61,6 +62,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
 
   callbacks: {
+    /*
+     * Refuse a Google sign-in whose address Google says is unverified, before
+     * the adapter stores it as this account's email. The rule, and why GitHub's
+     * verified flag is not checked here, are in `lib/auth/provider-email.ts`.
+     * A refusal reaches `/sign-in` as `?error=AccessDenied`.
+     *
+     * This decides only whether this sign-in proceeds; nothing it reads is
+     * carried into the token.
+     */
+    signIn({ account, profile }) {
+      return acceptsProviderEmail(account?.provider, profile);
+    },
+
     /**
      * `token.sub` is the account's key, and the only place it is checked.
      *

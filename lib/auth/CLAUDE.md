@@ -68,9 +68,18 @@ outside. **Ask for the capability, never the role.** A call site testing
 feature. It was documented in three places as "may sign in at all" and read in
 exactly one -- `getStaffUser` -- so it meant "may reach the admin", and a
 deactivated account could still comment, post and pin indefinitely. It is
-deliberately *not* extended to sign-in itself: that would be an Auth.js `signIn`
-callback with a different blast radius, and the switch exists to stop the
-writing rather than the reading.
+deliberately *not* extended to sign-in itself: the switch exists to stop the
+writing rather than the reading, and refusing the sign-in would have a
+different blast radius.
+
+**The `signIn` callback in `auth.ts` refuses one thing only**: a Google sign-in
+whose profile says `email_verified: false` (`lib/auth/provider-email.ts`).
+An unverified address would otherwise become the account's email -- the key
+Auth.js matches on, so the address's real owner is refused sign-up -- and a
+mail recipient. A missing claim is allowed. It does not check `is_active`
+(above), and GitHub's `verified` flag is not checked: the provider takes the
+primary `/user/emails` entry without it, and checking would mean a second API
+call per sign-in -- a separate decision.
 
 **A superuser is always staff**, and that is a `CHECK` constraint
 (`account_superuser_is_staff`) rather than a rule in the gate. The two were

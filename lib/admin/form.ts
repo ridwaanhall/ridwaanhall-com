@@ -396,7 +396,38 @@ export type ValidationContext = {
    * raises `22P02` on a malformed uuid instead of returning no rows.
    */
   exists: (table: PgTable, column: PgColumn, value: string) => Promise<boolean>;
+  /**
+   * `startId`, then its parent, then that row's parent, and so on up.
+   *
+   * For the rule `exists` cannot express: a self-referencing table must not be
+   * given a cycle, and whether one would form depends on rows other than the
+   * one being saved. A legal section A under B, then B under A, passed a check
+   * that only refused a section nested under itself, and the recursive delete
+   * walking that pair never finished. Handed in for the same reason as
+   * `exists`.
+   *
+   * The walk ends at a row with no parent, at an id it has already listed (so a
+   * cycle already in the data cannot keep it going), or after
+   * `ANCESTOR_LIMIT` entries. A chain that long means the walk was cut short,
+   * and a rule should treat it as unknown rather than as clean. A `startId`
+   * that is not a uuid, or names no row, yields `[]`.
+   */
+  ancestors: (
+    table: PgTable,
+    idColumn: PgColumn,
+    parentColumn: PgColumn,
+    startId: string,
+  ) => Promise<string[]>;
 };
+
+/**
+ * How many rows `ValidationContext.ancestors` walks before giving up.
+ *
+ * Every self-referencing table here nests one or two levels by convention, so
+ * a chain reaching this is either a cycle or data nobody meant; either way the
+ * save should be refused rather than trusted.
+ */
+export const ANCESTOR_LIMIT = 32;
 
 export type AdminFormModel = {
   /** Matches the registry key, the changelist and the URL. */
@@ -519,6 +550,36 @@ export function formFields(model: AdminFormModel): FormField[] {
  */
 export function formFieldsFor(model: AdminFormModel, id: string | null): FormField[] {
   return formFields(model).map((field) => resolveReadOnly(field, id));
+}
+
+/**
+ * What `validate` is shown: the submitted values, plus the stored value of
+ * every field the form does not let the reader write.
+ *
+ * `parseFields` skips read-only fields, so the values a save writes never carry
+ * them -- which is right for the write and wrong for a rule. The Users form's
+ * owner guard decides from `isSuperuser`, a read-only fact about the record,
+ * and with only the submitted values to read it was always `undefined`: an
+ * editor granted change on Users could deactivate an owner and the guard never
+ * fired. So the rule sees the stored facts, while the write still sees only
+ * what was submitted.
+ *
+ * The stored value wins over anything submitted under a read-only name. Nothing
+ * should arrive there, but a read-only fact is the one thing a rule must not
+ * take from the request.
+ */
+export function valuesForValidation(
+  model: AdminFormModel,
+  id: string | null,
+  submitted: FormValues,
+  stored: FormValues | null,
+): FormValues {
+  if (id === null || stored === null) return { ...submitted };
+  const facts: FormValues = {};
+  for (const field of formFieldsFor(model, id)) {
+    if (field.readOnly && field.name in stored) facts[field.name] = stored[field.name];
+  }
+  return { ...submitted, ...facts };
 }
 
 /** One field, with `readOnly` settled. */

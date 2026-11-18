@@ -280,7 +280,10 @@ export const userForm: AdminFormModel = {
          *
          * It is on the form rather than only on the list because `validate`
          * below needs it: a rule about whether the record outranks the person
-         * editing it can only read what the form loaded.
+         * editing it can only read what the form loaded. The parser skips a
+         * read-only field, so `saveRecord` hands `validate` the stored value
+         * through `valuesForValidation` -- without that, this was always
+         * `undefined` and both owner guards below were dead.
          */
         {
           name: "isSuperuser",

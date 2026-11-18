@@ -68,6 +68,19 @@ describe("versions", () => {
     assert.equal(formatVersion(nextVersion([4, 1, 3], [entry("feature"), entry("breaking")], FIRST)), "5.0.0");
   });
 
+  it("ignores rows with out-of-bounds components when choosing the latest", () => {
+    assert.deepEqual(latestVersion(["4.1.0", "99999999999999999999999.0.1", "4.10000.0"]), [4, 1, 0]);
+    assert.equal(latestVersion(["1000000000000000000000.0.1"]), null);
+  });
+
+  it("refuses to format a version that is not a safe integer triple", () => {
+    assert.throws(() => formatVersion([1e21, 0, 1]));
+    assert.throws(() => formatVersion([1, -1, 0]));
+    assert.throws(() => formatVersion([1, 0.5, 0]));
+    assert.throws(() => formatVersion([10000, 0, 0]));
+    assert.equal(formatVersion([9999, 9999, 9999]), "9999.9999.9999");
+  });
+
   it("starts at the first version when nothing came before", () => {
     assert.equal(formatVersion(nextVersion(null, [entry("fix")], FIRST)), "4.0.0");
   });

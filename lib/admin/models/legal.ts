@@ -4,7 +4,7 @@ import { legalDocument, legalDocumentType, legalSection } from "@/lib/db/app-sch
 
 import { countWhere, lookup } from "@/lib/admin/sql";
 
-import type { AdminFormModel } from "@/lib/admin/form";
+import { ANCESTOR_LIMIT, type AdminFormModel } from "@/lib/admin/form";
 import type { AdminListModel } from "@/lib/admin/list";
 import { vocabularyOptions } from "@/lib/admin/vocab";
 
@@ -338,12 +338,31 @@ export const legalSectionForm: AdminFormModel = {
     },
   ],
   /**
-   * A section cannot be its own parent.
+   * A section cannot end up nested under itself, directly or further up.
    *
-   * The renderer walks from a section to its parent, so a self-reference is a
-   * loop it would follow. Every section is offered as a parent (see above), so
-   * the one case that cannot work is refused here instead.
+   * The renderer walks from a section to its parent and the delete walks the
+   * other way, so a loop is something both would follow. Every section is
+   * offered as a parent (see above), so the cases that cannot work are refused
+   * here: the section itself, and any section it already sits above -- A under
+   * B, then B under A, passed a check that only compared the two ids.
+   *
+   * A new section is above nothing yet, so only an edit can close a loop.
    */
-  validate: async (values, { id }) =>
-    id !== null && values.parentId === id ? "A section cannot be nested under itself." : null,
+  validate: async (values, { id, ancestors }) => {
+    if (id === null) return null;
+    const parent = typeof values.parentId === "string" ? values.parentId : "";
+    if (!parent) return null;
+    if (parent === id) return "A section cannot be nested under itself.";
+
+    const chain = await ancestors(legalSection, legalSection.id, legalSection.parentId, parent);
+    if (chain.includes(id)) {
+      return "A section cannot be nested under one of its own subsections.";
+    }
+    // Cut short rather than ended at a top-level section, so the answer is
+    // unknown -- and a loop is the likeliest reason a chain runs this long.
+    if (chain.length >= ANCESTOR_LIMIT) {
+      return "That section is nested too deeply to be checked. Choose a parent nearer the top.";
+    }
+    return null;
+  },
 };

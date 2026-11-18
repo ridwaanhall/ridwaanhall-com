@@ -15,6 +15,27 @@ import type { AdminListModel } from "@/lib/admin/list";
  * git tag's name once published, so it is fixed after creation.
  */
 
+/**
+ * One version component: 0 to 9999, written without leading zeros.
+ *
+ * The column's CHECK accepts any run of digits, and the release workflow takes
+ * the highest stored version (hidden ones included) as the base for the next
+ * tag. A component past 2^53 stops being exact once read as a number, and one
+ * of 22 digits prints as `1e+21` -- a next version the CHECK then refuses, so
+ * every release fails until the row is removed. Four digits is far beyond any
+ * real release and well inside exact arithmetic. Leading zeros are refused
+ * because `4.01.0` and `4.1.0` would be two rows naming one tag.
+ */
+const VERSION_PART = /^(0|[1-9][0-9]{0,3})$/;
+
+/** The sentence for a version `VERSION_PART` refuses, or `null`. */
+export function versionProblem(version: string): string | null {
+  const parts = version.split(".");
+  return parts.length === 3 && parts.every((part) => VERSION_PART.test(part))
+    ? null
+    : "A version is three numbers from 0 to 9999 separated by dots, like 4.1.0, with no leading zeros.";
+}
+
 /** The kinds the column's CHECK constraint allows, spelled out with their headings. */
 const KIND_CHOICES = KINDS.map((kind) => ({ value: kind, label: KIND_LABEL[kind] }));
 
@@ -65,6 +86,13 @@ export const patchNoteForm: AdminFormModel = {
   label: (values) => `v${String(values.version ?? "")}`,
   deleteWarning: "Every line of this release is deleted with it. Its git tag and GitHub release stay.",
   cascades: [{ table: patchNoteEntry, fk: patchNoteEntry.patchNoteId, pk: patchNoteEntry.id }],
+  /*
+   * Create only. The version is `readOnly: "afterCreate"`, so on an edit the
+   * value `validate` sees is the stored one (`valuesForValidation`), and a row
+   * written before this rule must not become unsaveable because of it.
+   */
+  validate: async (values, { id }) =>
+    id === null && typeof values.version === "string" ? versionProblem(values.version) : null,
   fieldsets: [
     {
       fields: [

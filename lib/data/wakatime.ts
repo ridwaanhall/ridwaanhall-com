@@ -84,6 +84,8 @@ export type WakatimeAi = {
 };
 
 export type WakatimeStats = {
+  /** Epoch ms the cached copy was built; shared by every reader, so a client can tell how old its copy is (the CDN serves stale-while-revalidate). */
+  fetched_at: number;
   /** "GMT+7" -- the account's zone, which the week's days are cut on. */
   zone_label: string;
   start_date: string;
@@ -215,6 +217,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
 
   const zone = await getWakatimeTimezone(apiKey);
   const today = todayIn(zone);
+  const fetchedAt = Date.now();
   const start = daysAgo(today, 6); // seven days including today
 
   let summary: Summary;
@@ -378,6 +381,7 @@ async function fetchWakatimeStats(apiKey: string): Promise<WakatimeStats | null>
   const followUpHours = Math.round((heuristics?.follow_up_window_seconds ?? 0) / 3600);
 
   return {
+    fetched_at: fetchedAt,
     zone_label: zoneLabel(zone),
     start_date: longDateIn(summary.start, zone),
     end_date: longDateIn(summary.end, zone),

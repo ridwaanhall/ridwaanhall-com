@@ -5,6 +5,7 @@ import { Bars, Compare, EmptyTrack, fillOf, Kpi, Legend, Spark, Split, SplitRows
 import { DayPanel } from "@/components/foothill/charts/day-panel";
 import { EditorPanel, type EditorRange } from "@/components/foothill/charts/editor-panel";
 import { FeedDown } from "@/components/foothill/charts/feed-down";
+import { FreshGuard } from "@/components/foothill/fresh-guard";
 import { Heatmap } from "@/components/foothill/charts/heatmap";
 import { Brand } from "@/components/foothill/icons";
 import { MAIN } from "@/components/foothill/layout";
@@ -180,7 +181,14 @@ function Down({ title, source, every }: { title: string; source: string; every?:
 async function TodayPanel() {
   const [today, yesterday] = await Promise.all([getWakatimeDay(WAKATIME(), 0), getWakatimeDay(WAKATIME(), 1)]);
   if (!today && !yesterday) return <Down title="Today, so far" source="WakaTime" />;
-  return <DayPanel today={today} yesterday={yesterday} />;
+  // Whichever read answered carries the stamp; both are cached alike.
+  const fetchedAt = (today ?? yesterday)!.fetched_at;
+  return (
+    <>
+      <FreshGuard fetchedAt={fetchedAt} />
+      <DayPanel today={today} yesterday={yesterday} />
+    </>
+  );
 }
 
 function weekRange(stats: WakatimeStats): EditorRange {

@@ -32,6 +32,14 @@ Read the root `CLAUDE.md`, `lib/markdown/CLAUDE.md`, `lib/data/CLAUDE.md`,
   every page's payload. Keep large lists out of the shell.
 - Every public page renders one `<main>`; skeletons never do.
 - No clock comparison inside a `"use cache"` function.
+- **Vercel does not hold a prerendered page to `expire`**: the CDN serves it
+  stale-while-revalidate, so the first visitor after idle gets the old copy and
+  triggers the rebuild. Date-sensitive panels stamp `fetched_at` inside the
+  cached read and `FreshGuard` refreshes on the client; prove it with
+  `scripts/check-cache-freshness.mjs`, which reads `x-vercel-cache` and `Age`.
+- `/openhire` is a 404 by design while "open to work" and "hiring" are both
+  unchecked in the profile settings (the live sitemap leaves it out then), and
+  a 404 there is not a regression.
 
 ## Proof
 
